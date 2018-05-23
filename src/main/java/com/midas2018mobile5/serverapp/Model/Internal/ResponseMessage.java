@@ -1,15 +1,12 @@
 package com.midas2018mobile5.serverapp.Model.Internal;
 
 import lombok.Data;
-import org.springframework.lang.Nullable;
 
 @Data
 public class ResponseMessage {
-    @Nullable public String message;
-    public MidasStatus status;
+    public boolean success;
 
-    public ResponseMessage(MidasStatus sc, String msg) {
-        this.status = sc;
-        this.message = msg;
+    public ResponseMessage(boolean success) {
+        this.success = success;
     }
 }

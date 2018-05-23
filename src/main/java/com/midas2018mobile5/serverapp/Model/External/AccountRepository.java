@@ -1,7 +1,7 @@
 package com.midas2018mobile5.serverapp.Model.External;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -16,10 +16,10 @@ import org.springframework.stereotype.Repository;
  * 단, 한 레포지터리 당 한 테이블용으로만 사용할 것
  */
 @Repository
-public interface MemberRepository extends JpaRepository<Member, Long> {
-    @Query(value = "select count(m) from Member m where m.username = :name")
+public interface AccountRepository extends CrudRepository<Account, Long> {
+    @Query(value = "select count(m) from Account m where m.username = :name")
     int existsByMember(@Param(value = "name") String username);
 
-    @Query(value = "select count(m) from Member m where m.username = :name and m.password = :password")
+    @Query(value = "select count(m) from Account m where m.username = :name and m.password = :password")
     int existsByMember(@Param(value = "name") String username, @Param(value = "password") String password);
 }
