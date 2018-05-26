@@ -36,7 +36,6 @@ public class AccountController {
         return accountDAO.addMember(account);
     }
 
-    //
     // 차후 여유가 생기면 Session key를 붙이게 될 수 있음.
     @RequestMapping(value = "signin", method = RequestMethod.POST)
     public ResponseEntity<?> validiate(@Valid @RequestBody AccountAuth account) {
