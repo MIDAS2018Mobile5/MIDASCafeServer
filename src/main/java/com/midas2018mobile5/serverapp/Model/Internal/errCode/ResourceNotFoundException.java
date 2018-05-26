@@ -1,4 +1,4 @@
-package com.midas2018mobile5.serverapp.Model.Internal;
+package com.midas2018mobile5.serverapp.Model.Internal.errCode;
 
 import lombok.Data;
 

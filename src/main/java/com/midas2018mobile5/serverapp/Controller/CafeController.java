@@ -31,7 +31,7 @@ public class CafeController {
         return cafeDAO.addMenu(cafe);
     }
 
-    @RequestMapping(value = "delete", method = RequestMethod.DELETE)
+    @RequestMapping(value = "delete", method = RequestMethod.POST)
     public ResponseEntity<?> delete(@Valid @RequestBody CafeDto cafe) {
         return cafeDAO.deleteMenu(cafe.name);
     }

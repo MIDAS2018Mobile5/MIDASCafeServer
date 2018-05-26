@@ -3,7 +3,6 @@ package com.midas2018mobile5.serverapp.Service.Order;
 import com.midas2018mobile5.serverapp.Model.External.Order.Order;
 import com.midas2018mobile5.serverapp.Model.External.Order.OrderDto;
 import com.midas2018mobile5.serverapp.Model.External.Order.OrderRepository;
-import com.midas2018mobile5.serverapp.Model.Internal.ResourceNotFoundException;
 import com.midas2018mobile5.serverapp.Model.Internal.ResponseMessage;
 import com.midas2018mobile5.serverapp.Model.Internal.errCode.MidasStatus;
 import com.midas2018mobile5.serverapp.Model.Internal.errCode.ResponseError;
@@ -19,7 +18,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class OrderServiceImpl implements OrderService {
     private static final String notiMsg = "주문하신 상품이 준비되었습니다.";
-    private static final String topicPrefix = "MIDASCafe";
+    private static final String topicPrefix = "MIDASCafe_";
 
     @Autowired
     private OrderRepository or;

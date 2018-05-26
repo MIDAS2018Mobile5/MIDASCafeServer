@@ -45,12 +45,12 @@ public class AccountController {
 
     @RequestMapping(value = "account/signin", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public ResponseEntity<?> validiate(@Valid @RequestBody AccountAuth account) {
-        if(accountDAO.validMember(account)) {
+        if(accountDAO.validMember(account) != null) {
             Account gen = new Account();
             gen.setUserid(account.userid);
             gen.setPassword(account.password);
 
-            ResponseAuth message = new ResponseAuth(jwtGenerator.generate(gen));
+            ResponseAuth message = new ResponseAuth(jwtGenerator.generate(gen), accountDAO.validMember(account));
             return new ResponseEntity<>(message, HttpStatus.OK);
         } else {
             ResponseError err = new ResponseError(MidasStatus.LOGIN_FAILED);

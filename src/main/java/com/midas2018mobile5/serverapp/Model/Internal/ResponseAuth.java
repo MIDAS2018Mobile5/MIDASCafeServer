@@ -5,8 +5,10 @@ import lombok.Data;
 @Data
 public class ResponseAuth {
     public String token;
+    public String role;
 
-    public ResponseAuth(String token) {
+    public ResponseAuth(String token, String role) {
         this.token = token;
+        this.role = role;
     }
 }

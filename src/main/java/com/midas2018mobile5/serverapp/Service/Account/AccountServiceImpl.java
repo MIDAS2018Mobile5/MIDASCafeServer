@@ -4,7 +4,7 @@ import com.midas2018mobile5.serverapp.Model.External.Account.Account;
 import com.midas2018mobile5.serverapp.Model.External.Account.AccountAuth;
 import com.midas2018mobile5.serverapp.Model.External.Account.AccountDto;
 import com.midas2018mobile5.serverapp.Model.External.Account.AccountRepository;
-import com.midas2018mobile5.serverapp.Model.Internal.ResourceNotFoundException;
+import com.midas2018mobile5.serverapp.Model.Internal.errCode.ResourceNotFoundException;
 import com.midas2018mobile5.serverapp.Model.Internal.ResponseMessage;
 import com.midas2018mobile5.serverapp.Model.Internal.errCode.ResponseError;
 import com.midas2018mobile5.serverapp.Model.Internal.errCode.MidasStatus;
@@ -31,11 +31,17 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public boolean validMember(AccountAuth account) {
+    public String validMember(AccountAuth account) {
         Account currentAccount = ar.selectMember(account.userid);
+        boolean pwdmatch = false;
+
         if(currentAccount != null)
-            return encoder.matches(account.password, currentAccount.getPassword());
-        return false;
+            pwdmatch = encoder.matches(account.password, currentAccount.getPassword());
+
+        if(pwdmatch)
+            return currentAccount.getRole();
+
+        return null;
     }
 
     @Override

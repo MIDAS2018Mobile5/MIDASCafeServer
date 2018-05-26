@@ -17,7 +17,7 @@ public interface AccountService {
     Account selectMember(Long id);
 
     // 사용자 정보 확인
-    boolean validMember(AccountAuth account);
+    String validMember(AccountAuth account);
 
     // Account 추가 메소드
     ResponseEntity<?> addMember(AccountDto account);
