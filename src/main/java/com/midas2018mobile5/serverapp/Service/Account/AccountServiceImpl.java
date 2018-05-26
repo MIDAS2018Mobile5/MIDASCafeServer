@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AccountServiceImpl implements AccountService {
-
     // Not Recommended
     @Autowired
     private AccountRepository ar;
@@ -37,10 +36,24 @@ public class AccountServiceImpl implements AccountService {
         return false;
     }
 
-    // 이거는 지금 사용하지 않는 것을 권장..
     @Override
     public Iterable<Account> allMember() {
         return ar.findAll();
+    }
+
+    @Override
+    public ResponseEntity<?> privilegeMember(String userid) {
+        ResponseError err;
+        ResponseEntity<?> response;
+        try {
+            ar.privilegeMember(userid);
+            ResponseMessage msg = new ResponseMessage(true);
+            response = new ResponseEntity<>(msg, HttpStatus.OK);
+        } catch (Exception ex) {
+            err = new ResponseError(MidasStatus.INTERNAL_SERVER_ERROR);
+            response = new ResponseEntity<>(err, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return response;
     }
 
     // 사용자를 추가하기 전에,

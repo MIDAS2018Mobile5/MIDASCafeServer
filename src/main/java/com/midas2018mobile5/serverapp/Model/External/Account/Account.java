@@ -18,6 +18,9 @@ public class Account {
     @Column(nullable = false, length = 20)
     private String username;
 
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean isadministrator;
+
     public String getUserid() {
         return userid;
     }
@@ -40,6 +43,14 @@ public class Account {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public boolean getIsadministrator() {
+        return isadministrator;
+    }
+
+    public void setIsadministrator(boolean administrator) {
+        this.isadministrator = administrator;
     }
 
     @Override

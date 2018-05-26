@@ -19,8 +19,12 @@ import java.util.regex.Pattern;
 @RestController
 @RequestMapping(value = "/api/account")
 public class AccountController {
+    private final AccountService accountDAO;
+
     @Autowired
-    private AccountService accountDAO;
+    public AccountController(AccountService accountService) {
+        this.accountDAO = accountService;
+    }
 
     @RequestMapping(value = "signup", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public ResponseEntity<?> signUp(@Valid @RequestBody AccountDto account) {
@@ -36,8 +40,7 @@ public class AccountController {
         return accountDAO.addMember(account);
     }
 
-    // 차후 여유가 생기면 Session key를 붙이게 될 수 있음.
-    @RequestMapping(value = "signin", method = RequestMethod.POST)
+    @RequestMapping(value = "signin", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public ResponseEntity<?> validiate(@Valid @RequestBody AccountAuth account) {
         if(accountDAO.validMember(account)) {
             ResponseMessage message = new ResponseMessage(true);
@@ -48,7 +51,12 @@ public class AccountController {
         }
     }
 
-    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "search", method = RequestMethod.GET)
+    public Iterable<Account> findAll() {
+        return accountDAO.allMember();
+    }
+
+    @RequestMapping(value = "search/{id}", method = RequestMethod.GET)
     public Account findOne(@PathVariable(value = "id") Long id) {
         return accountDAO.selectMember(id);
     }
@@ -56,6 +64,11 @@ public class AccountController {
     @RequestMapping(method = RequestMethod.DELETE)
     public ResponseEntity<?> delete(@RequestParam(value = "id") Long id) {
         return accountDAO.deleteMember(id);
+    }
+
+    @RequestMapping(value = "/privilege/{user_id}", method = RequestMethod.PUT)
+    public ResponseEntity<?> privilege(@PathVariable(value ="user_id") String userid) {
+        return accountDAO.privilegeMember(userid);
     }
 
     // 받은 문자열이 숫자로만 되어 있는지 판별하는 메소드
@@ -87,7 +100,7 @@ public class AccountController {
         if(id.isEmpty())
             return false;
 
-        if(id.length() < 6 || id.length() > 12)
+        if(id.length() < 6 || id.length() > 21)
             return false;
 
         return !(isNum(id) || isChar(id));

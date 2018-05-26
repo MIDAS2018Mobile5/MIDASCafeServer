@@ -25,6 +25,9 @@ public interface AccountService {
     // Account 삭제 메소드
     ResponseEntity<?> deleteMember(Long id);
 
+    // 관리자 권한 부여..
+    ResponseEntity<?> privilegeMember(String userid);
+
     // 모든 Account 검색
     Iterable<Account> allMember();
 }
