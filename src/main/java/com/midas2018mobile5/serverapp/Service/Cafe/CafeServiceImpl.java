@@ -44,7 +44,9 @@ public class CafeServiceImpl implements CafeService {
     public ResponseEntity<?> deleteMenu(String name) {
         Cafe cafe = cr.selectMenu(name);
         cr.delete(cafe);
-        return ResponseEntity.ok().build();
+
+        ResponseMessage msg = new ResponseMessage(true);
+        return new ResponseEntity<>(msg, HttpStatus.OK);
     }
 
     @Override

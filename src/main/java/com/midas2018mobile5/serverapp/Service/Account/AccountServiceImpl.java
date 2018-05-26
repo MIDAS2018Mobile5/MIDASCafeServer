@@ -87,6 +87,8 @@ public class AccountServiceImpl implements AccountService {
     public ResponseEntity<?> deleteMember(Long id) {
         Account account = ar.findById(id).orElseThrow(() -> new ResourceNotFoundException("Account", "id", id));
         ar.delete(account);
-        return ResponseEntity.ok().build();
+
+        ResponseMessage msg = new ResponseMessage(true);
+        return new ResponseEntity<>(msg, HttpStatus.OK);
     }
 }

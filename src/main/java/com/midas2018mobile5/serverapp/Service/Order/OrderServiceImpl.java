@@ -36,7 +36,9 @@ public class OrderServiceImpl implements OrderService {
     public ResponseEntity<?> delOrder(Long id) {
         Order order = or.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order", "id", id));
         or.delete(order);
-        return ResponseEntity.ok().build();
+
+        ResponseMessage msg = new ResponseMessage(true);
+        return new ResponseEntity<>(msg, HttpStatus.OK);
     }
 
     @Override
