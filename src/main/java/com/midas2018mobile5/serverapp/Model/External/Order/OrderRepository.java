@@ -16,4 +16,10 @@ public interface OrderRepository extends CrudRepository<Order, Long> {
     @Modifying
     @Query(value = "update Order o set o.isordered = 1 where o.id = :id")
     void updateOrder(@Param(value = "id") Long id);
+
+    @Query(value = "select o from Order o where o.bid = id")
+    Iterable<Order> findBybid(@Param("id") Long id);
+
+    @Query(value = "select o from Order o where o.bid = :id")
+    Order findOne(@Param(value = "id") Long id);
 }

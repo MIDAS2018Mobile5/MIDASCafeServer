@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping(value = "/api/order")
+@RequestMapping(value = "/api/svc/order")
 public class OrderController {
     private final OrderService orderDAO;
 

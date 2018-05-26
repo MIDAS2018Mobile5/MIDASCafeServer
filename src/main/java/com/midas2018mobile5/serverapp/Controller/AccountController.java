@@ -3,7 +3,8 @@ package com.midas2018mobile5.serverapp.Controller;
 import com.midas2018mobile5.serverapp.Model.External.Account.Account;
 import com.midas2018mobile5.serverapp.Model.External.Account.AccountAuth;
 import com.midas2018mobile5.serverapp.Model.External.Account.AccountDto;
-import com.midas2018mobile5.serverapp.Model.Internal.ResponseMessage;
+import com.midas2018mobile5.serverapp.Model.Internal.Security.JwtGenerator;
+import com.midas2018mobile5.serverapp.Model.Internal.ResponseAuth;
 import com.midas2018mobile5.serverapp.Model.Internal.errCode.ResponseError;
 import com.midas2018mobile5.serverapp.Model.Internal.errCode.MidasStatus;
 import com.midas2018mobile5.serverapp.Service.Account.AccountService;
@@ -17,16 +18,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @RestController
-@RequestMapping(value = "/api/account")
+@RequestMapping(value = "/api")
 public class AccountController {
     private final AccountService accountDAO;
+    private final JwtGenerator jwtGenerator;
 
     @Autowired
-    public AccountController(AccountService accountService) {
+    public AccountController(AccountService accountService, JwtGenerator jwtGenerator) {
         this.accountDAO = accountService;
+        this.jwtGenerator = jwtGenerator;
     }
 
-    @RequestMapping(value = "signup", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "account/signup", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public ResponseEntity<?> signUp(@Valid @RequestBody AccountDto account) {
         if(!isValidID(account.userid)) {
             ResponseError msg = new ResponseError(MidasStatus.BAD_USERNAME);
@@ -40,10 +43,14 @@ public class AccountController {
         return accountDAO.addMember(account);
     }
 
-    @RequestMapping(value = "signin", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "account/signin", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public ResponseEntity<?> validiate(@Valid @RequestBody AccountAuth account) {
         if(accountDAO.validMember(account)) {
-            ResponseMessage message = new ResponseMessage(true);
+            Account gen = new Account();
+            gen.setUserid(account.userid);
+            gen.setPassword(account.password);
+
+            ResponseAuth message = new ResponseAuth(jwtGenerator.generate(gen));
             return new ResponseEntity<>(message, HttpStatus.OK);
         } else {
             ResponseError err = new ResponseError(MidasStatus.LOGIN_FAILED);
@@ -51,12 +58,12 @@ public class AccountController {
         }
     }
 
-    @RequestMapping(value = "search", method = RequestMethod.GET)
+    @RequestMapping(value = "svc/account/search", method = RequestMethod.GET)
     public Iterable<Account> findAll() {
         return accountDAO.allMember();
     }
 
-    @RequestMapping(value = "search/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "svc/account/search/{id}", method = RequestMethod.GET)
     public Account findOne(@PathVariable(value = "id") Long id) {
         return accountDAO.selectMember(id);
     }
@@ -66,7 +73,7 @@ public class AccountController {
         return accountDAO.deleteMember(id);
     }
 
-    @RequestMapping(value = "/privilege/{user_id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "svc/account/privilege/{user_id}", method = RequestMethod.PUT)
     public ResponseEntity<?> privilege(@PathVariable(value ="user_id") String userid) {
         return accountDAO.privilegeMember(userid);
     }

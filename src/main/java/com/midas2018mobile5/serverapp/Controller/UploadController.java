@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.Locale;
 
 @Controller
-@RequestMapping("/api/upload")
+@RequestMapping("/api/svc/upload")
 public class UploadController {
     private final String UPLOAD_PATH;
 
@@ -40,7 +40,7 @@ public class UploadController {
             stream.write(uploadFile.getBytes());
             stream.close();
 
-            return new ResponseEntity<>("img/" + fileName,HttpStatus.OK);
+            return new ResponseEntity<>("api/svc/img" + fileName,HttpStatus.OK);
         } catch (Exception ex) {
             return new ResponseEntity<>(ex.getMessage(),HttpStatus.BAD_REQUEST);
         }

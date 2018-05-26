@@ -8,6 +8,6 @@ public class HomeController {
 
     @GetMapping("/")
     public String Index() {
-        return "hello I'm Midas 2018 mobile 5 Server Apps";
+        return "hello I'm Midas Cafe Server Application";
     }
 }

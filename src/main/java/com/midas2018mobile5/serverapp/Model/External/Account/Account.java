@@ -15,11 +15,19 @@ public class Account {
     @JsonIgnore
     private String password;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 40)
     private String username;
 
-    @Column(nullable = false, columnDefinition = "boolean default false")
-    private boolean isadministrator;
+    @Column(nullable = false, length = 20)
+    private String role = "USER";
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 
     public String getUserid() {
         return userid;
@@ -43,14 +51,6 @@ public class Account {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public boolean getIsadministrator() {
-        return isadministrator;
-    }
-
-    public void setIsadministrator(boolean administrator) {
-        this.isadministrator = administrator;
     }
 
     @Override

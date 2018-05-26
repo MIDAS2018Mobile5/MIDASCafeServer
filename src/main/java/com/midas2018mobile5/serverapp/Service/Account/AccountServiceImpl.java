@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+
 @Service
 public class AccountServiceImpl implements AccountService {
     // Not Recommended
@@ -68,6 +70,8 @@ public class AccountServiceImpl implements AccountService {
                 newAccount.setUserid(account.userid);
                 newAccount.setPassword(encoder.encode(account.password));
                 newAccount.setUsername(account.username);
+                if(getCollectionSize(ar.findAll()) == 0)
+                    newAccount.setRole("ADMIN");
                 ar.save(newAccount);
 
                 ResponseMessage msg = new ResponseMessage(true);
@@ -87,6 +91,15 @@ public class AccountServiceImpl implements AccountService {
     public ResponseEntity<?> deleteMember(Long id) {
         Account account = ar.findById(id).orElseThrow(() -> new ResourceNotFoundException("Account", "id", id));
         ar.delete(account);
-        return ResponseEntity.ok().build();
+
+        ResponseMessage msg = new ResponseMessage(true);
+        return new ResponseEntity<>(msg, HttpStatus.OK);
+    }
+
+    private int getCollectionSize(Iterable<?> values) {
+        if(values instanceof Collection<?>)
+            return ((Collection<?>)values).size();
+        else
+            return -1;
     }
 }
