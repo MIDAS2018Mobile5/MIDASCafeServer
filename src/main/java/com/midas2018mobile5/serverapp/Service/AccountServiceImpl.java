@@ -59,7 +59,6 @@ public class AccountServiceImpl implements AccountService {
 
                 ResponseMessage msg = new ResponseMessage(true);
                 response = new ResponseEntity<>(msg, HttpStatus.OK);
-                return response;
             } else {
                 err = new ResponseError(MidasStatus.USERNAME_EXISTS);
                 response = new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
@@ -77,6 +76,4 @@ public class AccountServiceImpl implements AccountService {
         ar.delete(account);
         return ResponseEntity.ok().build();
     }
-
-
 }
