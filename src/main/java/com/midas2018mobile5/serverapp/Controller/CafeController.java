@@ -15,8 +15,12 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(value = "/api/cafe")
 public class CafeController {
+    private final CafeService cafeDAO;
+
     @Autowired
-    private CafeService cafeDAO;
+    public CafeController(CafeService cafeService) {
+        this.cafeDAO = cafeService;
+    }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
     public ResponseEntity<?> add(@Valid @RequestBody Cafe cafe) {

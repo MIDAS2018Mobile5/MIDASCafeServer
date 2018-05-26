@@ -1,7 +1,6 @@
 package com.midas2018mobile5.serverapp.Model.External.Cafe;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Table(name = "cafeMenu")

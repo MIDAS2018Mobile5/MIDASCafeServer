@@ -12,8 +12,12 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(value = "/api/order")
 public class OrderController {
+    private final OrderService orderDAO;
+
     @Autowired
-    private OrderService orderDAO;
+    public OrderController(OrderService orderService) {
+        this.orderDAO = orderService;
+    }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
     public ResponseEntity<?> add(@Valid @RequestBody Order order) {
