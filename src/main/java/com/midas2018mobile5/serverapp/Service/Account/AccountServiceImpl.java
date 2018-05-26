@@ -1,4 +1,4 @@
-package com.midas2018mobile5.serverapp.Service;
+package com.midas2018mobile5.serverapp.Service.Account;
 
 import com.midas2018mobile5.serverapp.Model.External.Account.Account;
 import com.midas2018mobile5.serverapp.Model.External.Account.AccountAuth;

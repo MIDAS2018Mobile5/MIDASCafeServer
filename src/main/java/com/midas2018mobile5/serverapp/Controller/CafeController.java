@@ -4,7 +4,7 @@ import com.midas2018mobile5.serverapp.Model.External.Cafe.Cafe;
 import com.midas2018mobile5.serverapp.Model.External.Cafe.CafeDto;
 import com.midas2018mobile5.serverapp.Model.Internal.errCode.MidasStatus;
 import com.midas2018mobile5.serverapp.Model.Internal.errCode.ResponseError;
-import com.midas2018mobile5.serverapp.Service.CafeService;
+import com.midas2018mobile5.serverapp.Service.Cafe.CafeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

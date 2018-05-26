@@ -1,4 +1,4 @@
-package com.midas2018mobile5.serverapp.Service;
+package com.midas2018mobile5.serverapp.Service.Cafe;
 
 import com.midas2018mobile5.serverapp.Model.External.Cafe.Cafe;
 import org.springframework.http.ResponseEntity;

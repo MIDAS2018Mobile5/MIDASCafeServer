@@ -7,9 +7,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "accounts")
 public class Account {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
-
+    @Id
     @Column(nullable = false, length = 20)
     private String userid;
 
@@ -46,6 +44,6 @@ public class Account {
 
     @Override
     public String toString() {
-        return String.format("User[id='%d', username='%s']", Id, userid);
+        return String.format("User[id='%s', username='%s']", userid, username);
     }
 }

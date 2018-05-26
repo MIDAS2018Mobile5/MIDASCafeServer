@@ -6,7 +6,7 @@ import com.midas2018mobile5.serverapp.Model.External.Account.AccountDto;
 import com.midas2018mobile5.serverapp.Model.Internal.ResponseMessage;
 import com.midas2018mobile5.serverapp.Model.Internal.errCode.ResponseError;
 import com.midas2018mobile5.serverapp.Model.Internal.errCode.MidasStatus;
-import com.midas2018mobile5.serverapp.Service.AccountService;
+import com.midas2018mobile5.serverapp.Service.Account.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
