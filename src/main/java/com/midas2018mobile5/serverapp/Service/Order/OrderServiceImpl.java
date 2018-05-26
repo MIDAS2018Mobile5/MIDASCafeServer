@@ -1,6 +1,7 @@
 package com.midas2018mobile5.serverapp.Service.Order;
 
 import com.midas2018mobile5.serverapp.Model.External.Order.Order;
+import com.midas2018mobile5.serverapp.Model.External.Order.OrderDto;
 import com.midas2018mobile5.serverapp.Model.External.Order.OrderRepository;
 import com.midas2018mobile5.serverapp.Model.Internal.ResourceNotFoundException;
 import com.midas2018mobile5.serverapp.Model.Internal.ResponseMessage;
@@ -39,8 +40,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Iterable<Order> getOrderList(String name) {
-        return or.selectOrder(name);
+    public Iterable<Order> getOrderList(OrderDto order) {
+        return or.selectOrder(order.userid);
     }
 
     @Override

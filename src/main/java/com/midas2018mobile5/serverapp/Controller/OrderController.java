@@ -1,6 +1,7 @@
 package com.midas2018mobile5.serverapp.Controller;
 
 import com.midas2018mobile5.serverapp.Model.External.Order.Order;
+import com.midas2018mobile5.serverapp.Model.External.Order.OrderDto;
 import com.midas2018mobile5.serverapp.Service.Order.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,11 @@ public class OrderController {
     @RequestMapping(value = "add", method = RequestMethod.POST)
     public ResponseEntity<?> add(@Valid @RequestBody Order order) {
         return orderDAO.addOrder(order);
+    }
+
+    @RequestMapping(value = "search", method = RequestMethod.POST)
+    public Iterable<Order> search(@Valid @RequestBody OrderDto order) {
+        return orderDAO.getOrderList(order);
     }
 
     @RequestMapping(value = "delete/{id}", method = RequestMethod.DELETE)
