@@ -1,6 +1,7 @@
 package com.midas2018mobile5.serverapp.Controller;
 
 import com.midas2018mobile5.serverapp.Model.External.Account;
+import com.midas2018mobile5.serverapp.Model.External.AccountDto;
 import com.midas2018mobile5.serverapp.Model.Internal.ResponseMessage;
 import com.midas2018mobile5.serverapp.Model.Internal.errCode.ResponseError;
 import com.midas2018mobile5.serverapp.Model.Internal.errCode.MidasStatus;
@@ -20,9 +21,9 @@ public class AccountController {
     @Autowired
     private AccountService accountDAO;
 
-    @RequestMapping(value = "signup", method = RequestMethod.POST)
-    public ResponseEntity<?> signUp(@Valid @RequestBody Account account) {
-        if(!isValidID(account.username)) {
+    @RequestMapping(value = "signup", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    public ResponseEntity<?> signUp(@Valid @RequestBody AccountDto account) {
+        if(!isValidID(account.userid)) {
             ResponseError msg = new ResponseError(MidasStatus.BAD_USERNAME);
             return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
         }

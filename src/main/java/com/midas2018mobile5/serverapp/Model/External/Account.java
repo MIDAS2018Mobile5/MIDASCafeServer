@@ -1,31 +1,51 @@
 package com.midas2018mobile5.serverapp.Model.External;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 
 @Entity
-@Data
 @Table(name = "accounts")
 public class Account {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long Id;
+    private Long Id;
 
     @Column(nullable = false, length = 20)
-    public String username;
+    private String userid;
 
-    @Column(nullable = false)
-    public String password;
+    @Column(nullable = false, length = 500)
+    @JsonIgnore
+    private String password;
 
-    protected Account() { }
+    @Column(nullable = false, length = 20)
+    private String username;
 
-    public Account(String username, String password) {
-        this.username = username;
+    public String getUserid() {
+        return userid;
+    }
+
+    public void setUserid(String userid) {
+        this.userid = userid;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
     public String toString() {
-        return String.format("User[id='%d', name='%s']", Id, username);
+        return String.format("User[id='%d', username='%s']", Id, userid);
     }
 }
