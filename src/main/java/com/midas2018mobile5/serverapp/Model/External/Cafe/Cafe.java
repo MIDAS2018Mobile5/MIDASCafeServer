@@ -12,9 +12,6 @@ public class Cafe {
     @Column(nullable = false, length = 20)
     public String name;
 
-    @Column(nullable = false)
-    public String menu;
-
     @Column(nullable = false, length = 10)
     public int price;
 }
