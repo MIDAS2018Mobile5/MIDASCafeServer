@@ -1,6 +1,8 @@
 package com.midas2018mobile5.serverapp.Controller;
 
-import com.midas2018mobile5.serverapp.Model.External.Account;
+import com.midas2018mobile5.serverapp.Model.External.Account.Account;
+import com.midas2018mobile5.serverapp.Model.External.Account.AccountAuth;
+import com.midas2018mobile5.serverapp.Model.External.Account.AccountDto;
 import com.midas2018mobile5.serverapp.Model.Internal.ResponseMessage;
 import com.midas2018mobile5.serverapp.Model.Internal.errCode.ResponseError;
 import com.midas2018mobile5.serverapp.Model.Internal.errCode.MidasStatus;
@@ -20,9 +22,9 @@ public class AccountController {
     @Autowired
     private AccountService accountDAO;
 
-    @RequestMapping(value = "signup", method = RequestMethod.POST)
-    public ResponseEntity<?> signUp(@Valid @RequestBody Account account) {
-        if(!isValidID(account.username)) {
+    @RequestMapping(value = "signup", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    public ResponseEntity<?> signUp(@Valid @RequestBody AccountDto account) {
+        if(!isValidID(account.userid)) {
             ResponseError msg = new ResponseError(MidasStatus.BAD_USERNAME);
             return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
         }
@@ -37,7 +39,7 @@ public class AccountController {
     //
     // 차후 여유가 생기면 Session key를 붙이게 될 수 있음.
     @RequestMapping(value = "signin", method = RequestMethod.POST)
-    public ResponseEntity<?> validiate(@Valid @RequestBody Account account) {
+    public ResponseEntity<?> validiate(@Valid @RequestBody AccountAuth account) {
         if(accountDAO.validMember(account)) {
             ResponseMessage message = new ResponseMessage(true);
             return new ResponseEntity<>(message, HttpStatus.OK);

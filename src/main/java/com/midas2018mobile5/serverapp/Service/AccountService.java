@@ -1,6 +1,8 @@
 package com.midas2018mobile5.serverapp.Service;
 
-import com.midas2018mobile5.serverapp.Model.External.Account;
+import com.midas2018mobile5.serverapp.Model.External.Account.Account;
+import com.midas2018mobile5.serverapp.Model.External.Account.AccountAuth;
+import com.midas2018mobile5.serverapp.Model.External.Account.AccountDto;
 import org.springframework.http.ResponseEntity;
 
 /**
@@ -15,10 +17,10 @@ public interface AccountService {
     Account selectMember(Long id);
 
     // 사용자 정보 확인
-    boolean validMember(Account account);
+    boolean validMember(AccountAuth account);
 
     // Account 추가 메소드
-    ResponseEntity<?> addMember(Account account);
+    ResponseEntity<?> addMember(AccountDto account);
 
     // Account 삭제 메소드
     ResponseEntity<?> deleteMember(Long id);

@@ -1,7 +1,9 @@
 package com.midas2018mobile5.serverapp.Service;
 
-import com.midas2018mobile5.serverapp.Model.External.Account;
-import com.midas2018mobile5.serverapp.Model.External.AccountRepository;
+import com.midas2018mobile5.serverapp.Model.External.Account.Account;
+import com.midas2018mobile5.serverapp.Model.External.Account.AccountAuth;
+import com.midas2018mobile5.serverapp.Model.External.Account.AccountDto;
+import com.midas2018mobile5.serverapp.Model.External.Account.AccountRepository;
 import com.midas2018mobile5.serverapp.Model.Internal.ResourceNotFoundException;
 import com.midas2018mobile5.serverapp.Model.Internal.ResponseMessage;
 import com.midas2018mobile5.serverapp.Model.Internal.errCode.ResponseError;
@@ -9,6 +11,7 @@ import com.midas2018mobile5.serverapp.Model.Internal.errCode.MidasStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,14 +21,20 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private AccountRepository ar;
 
+    @Autowired
+    private BCryptPasswordEncoder encoder;
+
     @Override
     public Account selectMember(Long id) {
         return ar.findById(id).orElseThrow(() -> new ResourceNotFoundException("Account", "id", id));
     }
 
     @Override
-    public boolean validMember(Account account) {
-        return ar.existsByMember(account.username, account.password) != 0;
+    public boolean validMember(AccountAuth account) {
+        Account currentAccount = ar.selectMember(account.userid);
+        if(currentAccount != null)
+            return encoder.matches(account.password, currentAccount.getPassword());
+        return false;
     }
 
     // 이거는 지금 사용하지 않는 것을 권장..
@@ -37,14 +46,20 @@ public class AccountServiceImpl implements AccountService {
     // 사용자를 추가하기 전에,
     // 반드시 중복되는 사용자가 있는지를 검사
     @Override
-    public ResponseEntity<?> addMember(Account account) {
+    public ResponseEntity<?> addMember(AccountDto account) {
         ResponseError err;
         ResponseEntity<?> response;
         try {
-            if(ar.existsByMember(account.username) == 0) {
-                ar.save(account);
+            if(ar.existsByMember(account.userid) == 0) {
+                Account newAccount = new Account();
+                newAccount.setUserid(account.userid);
+                newAccount.setPassword(encoder.encode(account.password));
+                newAccount.setUsername(account.username);
+                ar.save(newAccount);
+
                 ResponseMessage msg = new ResponseMessage(true);
                 response = new ResponseEntity<>(msg, HttpStatus.OK);
+                return response;
             } else {
                 err = new ResponseError(MidasStatus.USERNAME_EXISTS);
                 response = new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
@@ -62,4 +77,6 @@ public class AccountServiceImpl implements AccountService {
         ar.delete(account);
         return ResponseEntity.ok().build();
     }
+
+
 }
