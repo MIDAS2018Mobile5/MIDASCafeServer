@@ -15,7 +15,7 @@ public class Account {
     @JsonIgnore
     private String password;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 40)
     private String username;
 
     @Column(nullable = false, length = 20)

@@ -2,6 +2,7 @@ buildscript {
     ext {
         springBootVersion = '2.0.2.RELEASE'
         swaggerVersion = '2.7.0'
+        pahoVersion = '1.1.1'
     }
     repositories {
         mavenCentral()
@@ -33,6 +34,7 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
     compile('org.springframework.boot:spring-boot-starter-data-rest')
     compile('org.springframework.boot:spring-boot-starter-security')
+    compile("org.eclipse.paho:org.eclipse.paho.client.mqttv3:$pahoVersion")
     compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.7.0'
     runtime('org.springframework.boot:spring-boot-devtools')
     // compile('org.springframework.data:spring-data-rest-hal-browser')

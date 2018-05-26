@@ -11,13 +11,13 @@ public class Order {
     public Long Id;
 
     @Column(nullable = false)
+    public Long bid;
+
+    @Column(nullable = false)
     public String name;
 
     @Column(nullable = false)
     public String menu;
-
-    @Column(nullable = false)
-    public int count;
 
     @Column(nullable = false)
     public int price;
