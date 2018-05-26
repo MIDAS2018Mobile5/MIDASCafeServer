@@ -1,4 +1,4 @@
-package com.midas2018mobile5.serverapp.Model.External;
+package com.midas2018mobile5.serverapp.Model.External.Account;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -17,9 +17,12 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface AccountRepository extends CrudRepository<Account, Long> {
-    @Query(value = "select count(m) from Account m where m.username = :name")
-    int existsByMember(@Param(value = "name") String username);
+    @Query(value = "select count(m) from Account m where m.userid = :name")
+    int existsByMember(@Param(value = "name") String userid);
 
-    @Query(value = "select count(m) from Account m where m.username = :name and m.password = :password")
+    @Query(value = "select m from Account m where m.userid= :name")
+    Account selectMember(@Param(value = "name") String userid);
+
+    @Query(value = "select count(m) from Account m where m.userid = :name and m.password = :password")
     int existsByMember(@Param(value = "name") String username, @Param(value = "password") String password);
 }

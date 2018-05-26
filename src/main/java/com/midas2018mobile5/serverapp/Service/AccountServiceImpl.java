@@ -1,8 +1,9 @@
 package com.midas2018mobile5.serverapp.Service;
 
-import com.midas2018mobile5.serverapp.Model.External.Account;
-import com.midas2018mobile5.serverapp.Model.External.AccountDto;
-import com.midas2018mobile5.serverapp.Model.External.AccountRepository;
+import com.midas2018mobile5.serverapp.Model.External.Account.Account;
+import com.midas2018mobile5.serverapp.Model.External.Account.AccountAuth;
+import com.midas2018mobile5.serverapp.Model.External.Account.AccountDto;
+import com.midas2018mobile5.serverapp.Model.External.Account.AccountRepository;
 import com.midas2018mobile5.serverapp.Model.Internal.ResourceNotFoundException;
 import com.midas2018mobile5.serverapp.Model.Internal.ResponseMessage;
 import com.midas2018mobile5.serverapp.Model.Internal.errCode.ResponseError;
@@ -29,8 +30,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public boolean validMember(Account account) {
-        return ar.existsByMember(account.getUserid(), account.getPassword()) != 0;
+    public boolean validMember(AccountAuth account) {
+        Account currentAccount = ar.selectMember(account.userid);
+        if(currentAccount != null)
+            return encoder.matches(account.password, currentAccount.getPassword());
+        return false;
     }
 
     // 이거는 지금 사용하지 않는 것을 권장..

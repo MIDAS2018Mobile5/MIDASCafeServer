@@ -1,4 +1,4 @@
-package com.midas2018mobile5.serverapp.Model.External;
+package com.midas2018mobile5.serverapp.Model.External.Account;
 
 import lombok.Data;
 
