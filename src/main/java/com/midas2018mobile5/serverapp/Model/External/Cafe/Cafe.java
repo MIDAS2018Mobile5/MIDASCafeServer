@@ -13,4 +13,7 @@ public class Cafe {
 
     @Column(nullable = false, length = 10)
     public int price;
+
+    @Column(nullable = false, length = 500)
+    public String imgpath;
 }
