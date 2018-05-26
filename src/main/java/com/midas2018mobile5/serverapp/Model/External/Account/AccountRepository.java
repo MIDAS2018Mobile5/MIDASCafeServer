@@ -30,6 +30,6 @@ public interface AccountRepository extends CrudRepository<Account, Long> {
     int existsByMember(@Param(value = "name") String username, @Param(value = "password") String password);
 
     @Modifying
-    @Query(value = "update Account a set a.isadministrator = 1 where a.userid = :userid")
+    @Query(value = "update Account a set a.role = ADMIN where a.userid = :userid")
     void privilegeMember(@Param(value = "userid") String userid);
 }

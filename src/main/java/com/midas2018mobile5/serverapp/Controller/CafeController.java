@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping(value = "/api/cafe")
+@RequestMapping(value = "/api/svc/cafe")
 public class CafeController {
     private final CafeService cafeDAO;
 

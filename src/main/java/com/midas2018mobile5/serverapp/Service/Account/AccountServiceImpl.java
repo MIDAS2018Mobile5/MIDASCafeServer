@@ -46,7 +46,7 @@ public class AccountServiceImpl implements AccountService {
         ResponseError err;
         ResponseEntity<?> response;
         try {
-            ar.privilegeMember(userid);
+            // ar.privilegeMember(userid);
             ResponseMessage msg = new ResponseMessage(true);
             response = new ResponseEntity<>(msg, HttpStatus.OK);
         } catch (Exception ex) {
