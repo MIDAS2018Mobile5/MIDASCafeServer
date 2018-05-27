@@ -14,7 +14,7 @@ public interface OrderRepository extends CrudRepository<Order, Long> {
     Iterable<Order> selectOrder(@Param(value = "name") String name);
 
     @Modifying
-    @Query(value = "update Order o set o.isordered = 1 where o.id = :id")
+    @Query(value = "update Order o set o.isordered = 1 where o.bid = :id")
     void updateOrder(@Param(value = "id") Long id);
 
     @Query(value = "select o from Order o where o.bid = id")
