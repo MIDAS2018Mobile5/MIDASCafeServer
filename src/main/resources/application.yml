@@ -1,0 +1,25 @@
+server:
+  port: 8080
+
+property:
+  app:
+    init: false
+
+spring:
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: update
+
+  profiles:
+    active: dev
+
+  mvc:
+    static-path-pattern: /api/cafe/img/**
+  resources:
+    static-locations: classpath:/static/
+    add-mappings: true
+
+  data:
+    rest:
+      base-path: /api
