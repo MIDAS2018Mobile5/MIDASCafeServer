@@ -5,6 +5,7 @@ import com.midas2018mobile5.serverapp.dao.order.OrderSearchService;
 import com.midas2018mobile5.serverapp.dao.order.OrderService;
 import com.midas2018mobile5.serverapp.dao.user.UserService;
 import com.midas2018mobile5.serverapp.domain.cafe.Cafe;
+import com.midas2018mobile5.serverapp.domain.user.Role;
 import com.midas2018mobile5.serverapp.domain.user.userEntity.User;
 import com.midas2018mobile5.serverapp.dto.order.OrderDto;
 import com.midas2018mobile5.serverapp.model.CustomPageRequest;
@@ -34,7 +35,7 @@ public class OrderController {
     private final OrderService orderService;
     private final OrderSearchService orderSearchService;
 
-    @Secured("ROLE_ADMIN")
+    @Secured(Role.ROLES.ADMIN)
     @GetMapping
     public Page<OrderDto.Res> getOrderList(final CustomPageRequest pageRequest) {
         return orderSearchService.search("", pageRequest.of("createdAt"))
@@ -51,7 +52,7 @@ public class OrderController {
         return new OrderDto.Res(orderService.create(dto.toEntity(curUser, menu)));
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured(Role.ROLES.ADMIN)
     @PatchMapping("/finish/{id}")
     @ResponseStatus(HttpStatus.OK)
     public OrderDto.Res finishOrder(@PathVariable long id) {

@@ -2,6 +2,7 @@ package com.midas2018mobile5.serverapp.api;
 
 import com.midas2018mobile5.serverapp.dao.cafe.CafeSearchService;
 import com.midas2018mobile5.serverapp.dao.cafe.CafeService;
+import com.midas2018mobile5.serverapp.domain.user.Role;
 import com.midas2018mobile5.serverapp.dto.cafe.CafeDto;
 import com.midas2018mobile5.serverapp.model.CustomPageRequest;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +44,7 @@ public class CafeController {
         return new CafeDto.Res(cafeService.findById(id));
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured(Role.ROLES.ADMIN)
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CafeDto.Res addCafeMenu(@RequestBody @Valid final CafeDto.Req dto,
@@ -52,7 +53,7 @@ public class CafeController {
         return new CafeDto.Res(cafeService.create(dto, imgPath));
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured(Role.ROLES.ADMIN)
     @PatchMapping("/{cafeMenuName}")
     @ResponseStatus(HttpStatus.OK)
     public CafeDto.Res updateCafeMenu(@PathVariable final String cafeMenuName,
@@ -61,7 +62,7 @@ public class CafeController {
         return new CafeDto.Res(cafeService.updateByMenuName(cafeMenuName, dto, imgFile));
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured(Role.ROLES.ADMIN)
     @DeleteMapping("/{cafeMenuName}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> deleteCafeMenu(@PathVariable final String cafeMenuName) {
