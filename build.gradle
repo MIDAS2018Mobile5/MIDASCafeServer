@@ -57,14 +57,15 @@ configurations {
 
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
+    compile('org.springframework.boot:spring-boot-starter-data-redis')
     compile('org.springframework.boot:spring-boot-starter-data-rest')
     compile('org.springframework.boot:spring-boot-starter-security')
     compile("org.eclipse.paho:org.eclipse.paho.client.mqttv3:$pahoVersion")
     compile("com.querydsl:querydsl-apt")
     compile("com.querydsl:querydsl-jpa")
     compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.7.0'
+    compileOnly("org.springframework.boot:spring-boot-configuration-processor")
     runtime('org.springframework.boot:spring-boot-devtools')
-    // compile('org.springframework.data:spring-data-rest-hal-browser')
     runtime('mysql:mysql-connector-java')
     compile('org.projectlombok:lombok')
     testCompile('org.springframework.boot:spring-boot-starter-test')

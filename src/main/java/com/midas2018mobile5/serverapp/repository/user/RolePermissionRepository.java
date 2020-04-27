@@ -1,6 +1,6 @@
 package com.midas2018mobile5.serverapp.repository.user;
 
-import com.midas2018mobile5.serverapp.domain.user.Privilege;
+import com.midas2018mobile5.serverapp.domain.user.RolePermission;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Blog : https://blog.neonkid.xyz
  * Github : https://github.com/NEONKID
  */
-public interface PrivilegeRepository extends JpaRepository<Privilege, Long> {
-    Privilege findByName(String name);
+public interface PrivilegeRepository extends JpaRepository<RolePermission, Long> {
+    RolePermission findByName(String name);
 }
