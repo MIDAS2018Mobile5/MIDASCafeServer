@@ -1,6 +1,18 @@
 server:
   port: 8080
 
+  servlet:
+    context-path: /
+    session:
+      cookie:
+        http-only: true
+      tracking-modes: cookie
+
+  error:
+    whitelabel:
+      enabled: false
+
+
 property:
   app:
     init: false
