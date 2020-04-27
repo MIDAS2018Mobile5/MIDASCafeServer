@@ -2,10 +2,14 @@ package com.midas2018mobile5.serverapp.error;
 
 import com.midas2018mobile5.serverapp.error.exception.cafe.CafeMenuDuplicationException;
 import com.midas2018mobile5.serverapp.error.exception.cafe.CafeMenuNotFoundException;
+import com.midas2018mobile5.serverapp.error.exception.order.OrderInvalidProcessException;
+import com.midas2018mobile5.serverapp.error.exception.order.OrderNotFoundException;
 import com.midas2018mobile5.serverapp.error.exception.user.UserDuplicationException;
 import com.midas2018mobile5.serverapp.error.exception.user.UserNotFoundException;
+import com.midas2018mobile5.serverapp.error.exception.user.UserPasswordInvalidException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -35,12 +39,42 @@ public class ErrorExceptionController {
         return buildError(userNotFound);
     }
 
+    @ExceptionHandler(value = UserPasswordInvalidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    protected ErrorResponse handleUserPasswordInvalidException(UserPasswordInvalidException ex) {
+        final ErrorCode passwordInvalid = ErrorCode.LOGIN_INPUT_INVALID;
+        log.error(passwordInvalid.getMessage() + ": {}", ex.getPassword());
+        return buildError(passwordInvalid);
+    }
+
+    @ExceptionHandler(value = AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    protected ErrorResponse handleAccessDeniedException(AccessDeniedException ex) {
+        final ErrorCode accessdenied = ErrorCode.HANDLE_ACCESS_DENIED;
+        log.error(accessdenied.getMessage() + ": {}", ex.getLocalizedMessage());
+        return buildError(accessdenied);
+    }
+
     @ExceptionHandler(value = CafeMenuNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     protected ErrorResponse handleCafeMenuNotFoundException(CafeMenuNotFoundException ex) {
         final ErrorCode menuNotFound = ErrorCode.MENU_NOT_FOUND;
         log.error(menuNotFound.getMessage(), ex.getMenuName());
         return buildError(menuNotFound);
+    }
+
+    @ExceptionHandler(value = OrderInvalidProcessException.class)
+    protected ErrorResponse handleOrderInvalidProcessException(OrderInvalidProcessException ex) {
+        final ErrorCode invalidOrderChange = ErrorCode.BAD_ORDER_CHANGE;
+        log.error(invalidOrderChange.getMessage() + ": {}", ex.getId());
+        return buildError(invalidOrderChange);
+    }
+
+    @ExceptionHandler(value = OrderNotFoundException.class)
+    protected ErrorResponse handlerOrderNotFoundException(OrderNotFoundException ex) {
+        final ErrorCode orderNotFound = ErrorCode.ORDER_NOT_FOUND;
+        log.error(orderNotFound.getMessage() + ": {}", ex.getId());
+        return buildError(orderNotFound);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

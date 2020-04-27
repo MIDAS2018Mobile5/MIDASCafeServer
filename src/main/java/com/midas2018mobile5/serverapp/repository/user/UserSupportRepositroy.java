@@ -6,4 +6,5 @@ package com.midas2018mobile5.serverapp.repository.user;
  * Github : https://github.com/NEONKID
  */
 public interface UserSupportRepositroy {
+
 }

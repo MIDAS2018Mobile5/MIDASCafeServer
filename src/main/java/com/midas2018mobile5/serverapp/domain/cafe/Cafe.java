@@ -42,7 +42,7 @@ public class Cafe {
     @Embedded
     private CafeImage image;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "cafe")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cafe", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Order> orders = new HashSet<>();
 
     @Builder

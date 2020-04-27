@@ -48,13 +48,12 @@ public class UserDto {
             this.password = password;
         }
 
-        public User toEntity(Role role) {
+        public User toEntity() {
             return User.builder()
                     .userid(this.userid)
                     .email(this.email)
                     .firstName(this.firstName)
                     .lastName(this.lastName)
-                    .roles(Collections.singletonList(role))
                     .password(Password.builder().value(this.password).build())
                     .build();
         }

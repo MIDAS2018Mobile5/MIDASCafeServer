@@ -2,6 +2,7 @@ package com.midas2018mobile5.serverapp.dto.order;
 
 import com.midas2018mobile5.serverapp.domain.cafe.Cafe;
 import com.midas2018mobile5.serverapp.domain.order.Order;
+import com.midas2018mobile5.serverapp.domain.order.OrderStatus;
 import com.midas2018mobile5.serverapp.domain.user.userEntity.User;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -36,7 +37,11 @@ public class OrderDto {
         }
 
         public Order toEntity(User user, Cafe menu) {
-            return Order.builder().user(user).cafe(menu).amount(amount).build();
+            return Order.builder()
+                    .user(user)
+                    .cafe(menu)
+                    .amount(amount)
+                    .build();
         }
     }
 
@@ -46,12 +51,14 @@ public class OrderDto {
         private String userid;
         private int amount;
         private String menuName;
+        private OrderStatus status;
 
         public Res(Order order) {
             this.id = order.getId();
             this.userid = order.getUser().getUserid();
             this.amount = order.getAmount();
             this.menuName = order.getCafe().getName();
+            this.status = order.getStatus();
         }
     }
 }

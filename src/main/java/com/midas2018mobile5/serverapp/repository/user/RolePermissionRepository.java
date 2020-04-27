@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Blog : https://blog.neonkid.xyz
  * Github : https://github.com/NEONKID
  */
-public interface PrivilegeRepository extends JpaRepository<RolePermission, Long> {
-    RolePermission findByName(String name);
+public interface RolePermissionRepository extends JpaRepository<RolePermission, Long>, RolePermissionSupportRepository {
+    RolePermission findByPermission(String permission);
 }

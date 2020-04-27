@@ -5,6 +5,7 @@ import com.midas2018mobile5.serverapp.dao.order.OrderSearchService;
 import com.midas2018mobile5.serverapp.dao.order.OrderService;
 import com.midas2018mobile5.serverapp.dao.user.UserService;
 import com.midas2018mobile5.serverapp.domain.cafe.Cafe;
+import com.midas2018mobile5.serverapp.domain.order.Order;
 import com.midas2018mobile5.serverapp.domain.user.Role;
 import com.midas2018mobile5.serverapp.domain.user.userEntity.User;
 import com.midas2018mobile5.serverapp.dto.order.OrderDto;
@@ -18,6 +19,7 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 
 /**
@@ -49,7 +51,14 @@ public class OrderController {
         User curUser = userService.findByUserId(dto.getUserid());
         Cafe menu = cafeService.findByName(dto.getMenuName());
 
-        return new OrderDto.Res(orderService.create(dto.toEntity(curUser, menu)));
+        Order oldOrder = orderService.findNotPurchased(curUser, menu);
+
+        if (oldOrder == null)
+            oldOrder = dto.toEntity(curUser, menu);
+        else
+            oldOrder.update(dto);
+
+        return new OrderDto.Res(orderService.create(oldOrder));
     }
 
     @Secured(Role.ROLES.ADMIN)
@@ -57,6 +66,20 @@ public class OrderController {
     @ResponseStatus(HttpStatus.OK)
     public OrderDto.Res finishOrder(@PathVariable long id) {
         return new OrderDto.Res(orderService.finishOrderById(id));
+    }
+
+    @Secured(Role.ROLES.ADMIN)
+    @PatchMapping("/accept/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public OrderDto.Res acceptOrder(@PathVariable long id) {
+        return new OrderDto.Res(orderService.acceptOrderById(id));
+    }
+
+    @PostAuthorize("isAuthenticated() and (returnObject.userid == principal.username)")
+    @PatchMapping("/purchase/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public OrderDto.Res purchaseOrder(@PathVariable long id) {
+        return new OrderDto.Res(orderService.purchaseOrderById(id));
     }
 
     @PostAuthorize("isAuthenticated() and ((returnObject.userid == principal.username) or hasRole('ROLE_ADMIN'))")

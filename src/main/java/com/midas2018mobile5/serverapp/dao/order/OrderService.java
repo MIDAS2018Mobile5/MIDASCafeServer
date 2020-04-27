@@ -1,6 +1,8 @@
 package com.midas2018mobile5.serverapp.dao.order;
 
+import com.midas2018mobile5.serverapp.domain.cafe.Cafe;
 import com.midas2018mobile5.serverapp.domain.order.Order;
+import com.midas2018mobile5.serverapp.domain.user.userEntity.User;
 import com.midas2018mobile5.serverapp.error.exception.order.OrderNotFoundException;
 import com.midas2018mobile5.serverapp.repository.order.OrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,22 @@ public class OrderService {
 
     public Order create(Order order) {
         return orderRepository.save(order);
+    }
+
+    public Order findNotPurchased(User user, Cafe menu) {
+        return orderRepository.findNotPurchasedOrder(user, menu);
+    }
+
+    public Order acceptOrderById(long id) {
+        final Order order = findById(id);
+        order.setReady();
+        return order;
+    }
+
+    public Order purchaseOrderById(long id) {
+        final Order order = findById(id);
+        order.setPurchased();
+        return order;
     }
 
     public Order finishOrderById(long id) {

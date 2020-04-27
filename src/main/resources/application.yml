@@ -23,3 +23,10 @@ spring:
   data:
     rest:
       base-path: /api
+
+security:
+  token:
+    issuer: security
+    expired: 30
+    refreshExpired: 60
+    signing-key: MIDAS

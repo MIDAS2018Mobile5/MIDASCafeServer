@@ -1,6 +1,6 @@
 package com.midas2018mobile5.serverapp.api;
 
-import com.midas2018mobile5.serverapp.config.security.auth.JwtTokenProvider;
+import com.midas2018mobile5.serverapp.config.security.api.token.ApiTokenFactory;
 import com.midas2018mobile5.serverapp.dao.user.UserSearchService;
 import com.midas2018mobile5.serverapp.dao.user.UserService;
 import com.midas2018mobile5.serverapp.domain.user.Role;
@@ -36,7 +36,7 @@ import javax.validation.Valid;
 public class UserController {
     private final UserService userService;
     private final UserSearchService userSearchService;
-    private final JwtTokenProvider provider;
+    private final ApiTokenFactory apiTokenFactory;
 
     @Secured(Role.ROLES.ADMIN)
     @GetMapping
@@ -65,10 +65,11 @@ public class UserController {
         User user = userService.validate(dto);
         return UserDto.SignInRes.builder()
                 .user(user)
-                .token(provider.createToken(user.getUserid(), user.getRoles()))
+                .token(apiTokenFactory.createToken(user.getUserid(), user.getRoles()))
                 .build();
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping(value = "/signOut")
     @ResponseStatus(value = HttpStatus.OK)
     public ResponseEntity<?> signOutUser(HttpServletRequest req, HttpServletResponse res) {

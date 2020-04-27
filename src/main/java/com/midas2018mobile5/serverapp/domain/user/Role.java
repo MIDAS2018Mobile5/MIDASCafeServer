@@ -1,9 +1,8 @@
 package com.midas2018mobile5.serverapp.domain.user;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.midas2018mobile5.serverapp.domain.user.userEntity.User;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
@@ -23,25 +22,36 @@ public class Role implements GrantedAuthority {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column
     private String name;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "roles_privileges",
-            joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "privilege_id", referencedColumnName = "id")
-    )
-    private Collection<Privilege> privileges;
+//    @ManyToMany(fetch = FetchType.EAGER)
+//    @JoinTable(
+//            name = "roles_privileges",
+//            joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
+//            inverseJoinColumns = @JoinColumn(name = "privilege_id", referencedColumnName = "id")
+//    )
+//    private Collection<RolePermission> privileges;
 
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Collection<RolePermission> privileges;
+
+    @JsonIgnore
     @Override
     public String getAuthority() {
         return name;
     }
 
     @Builder
-    public Role(String name, Collection<Privilege> privileges) {
+    public Role(String name, User user, Collection<RolePermission> privileges) {
         this.name = name;
+        this.user = user;
         this.privileges = privileges;
     }
 

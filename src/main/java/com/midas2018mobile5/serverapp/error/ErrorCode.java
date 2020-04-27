@@ -16,6 +16,7 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR(500, "C004", "Server Error"),
     INVALID_TYPE_VALUE(400, "C005", "Invalid Type Value"),
     HANDLE_ACCESS_DENIED(403, "C006", "Access is Denied"),
+    UNAUTHORIZED(401, "C007", "Unauthorized Request"),
 
     // User
     USER_NOT_FOUND(400, "U001", "User not found"),
@@ -24,11 +25,15 @@ public enum ErrorCode {
 
     // Cafe
     MENU_NOT_FOUND(400, "M001", "Menu not found"),
-    MENU_DUPLICATION(400, "M002", "Menu is exists");
+    MENU_DUPLICATION(400, "M002", "Menu is exists"),
+
+    // Order
+    BAD_ORDER_CHANGE(400, "O001", "Order status change failed"),
+    ORDER_NOT_FOUND(400, "O002", "Order not found");
 
     private final String code;
     private final String message;
-    private int status;
+    private final int status;
 
     ErrorCode(final int status, final String code, final String message) {
         this.code = code;

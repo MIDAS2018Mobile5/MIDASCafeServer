@@ -1,11 +1,13 @@
 package com.midas2018mobile5.serverapp.dao.user;
 
 import com.midas2018mobile5.serverapp.domain.user.Role;
+import com.midas2018mobile5.serverapp.domain.user.RolePermission;
 import com.midas2018mobile5.serverapp.domain.user.userEntity.User;
 import com.midas2018mobile5.serverapp.dto.user.UserDto;
 import com.midas2018mobile5.serverapp.error.exception.user.UserDuplicationException;
 import com.midas2018mobile5.serverapp.error.exception.user.UserNotFoundException;
 import com.midas2018mobile5.serverapp.error.exception.user.UserPasswordInvalidException;
+import com.midas2018mobile5.serverapp.repository.user.RolePermissionRepository;
 import com.midas2018mobile5.serverapp.repository.user.RoleRepository;
 import com.midas2018mobile5.serverapp.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,7 @@ import java.util.Optional;
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final RolePermissionRepository permRepository;
 
     @Transactional(readOnly = true)
     @Override
@@ -58,8 +61,17 @@ public class UserService implements UserDetailsService {
         if (isExistedUser(dto.getUserid()))
             throw new UserDuplicationException(dto.getUserid());
 
-        Role userRole = roleRepository.findByName(Role.ROLES.USER);
-        return userRepository.save(dto.toEntity(userRole));
+        User user = dto.toEntity();
+        Role userRole = Role.builder().user(user).name(Role.ROLES.USER).build();
+        RolePermission userPerm = RolePermission.builder()
+                .name(RolePermission.PERMISSIONS.USER)
+                .role(userRole).build();
+
+        user = userRepository.save(user);
+        roleRepository.save(userRole);
+        permRepository.save(userPerm);
+
+        return user;
     }
 
     @Transactional(readOnly = true)

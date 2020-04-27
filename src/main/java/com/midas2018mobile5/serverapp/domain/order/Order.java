@@ -2,6 +2,8 @@ package com.midas2018mobile5.serverapp.domain.order;
 
 import com.midas2018mobile5.serverapp.domain.cafe.Cafe;
 import com.midas2018mobile5.serverapp.domain.user.userEntity.User;
+import com.midas2018mobile5.serverapp.dto.order.OrderDto;
+import com.midas2018mobile5.serverapp.error.exception.order.OrderInvalidProcessException;
 import com.midas2018mobile5.serverapp.model.DateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -47,11 +49,29 @@ public class Order extends DateTime {
         this.status = OrderStatus.NOT_PURCHASED;
     }
 
+    public void update(OrderDto.Req dto) {
+        this.amount = dto.amount;
+    }
+
+    public void setReady() {
+        if (!status.equals(OrderStatus.PURCHASED))
+            throw new OrderInvalidProcessException(id);
+        this.status = OrderStatus.READY;
+    }
+
     public void setFinish() {
+        if (!status.equals(OrderStatus.READY))
+            throw new OrderInvalidProcessException(id);
         this.status = OrderStatus.FINISHED;
     }
 
     public void setCancel() {
         this.status = OrderStatus.CANCELED;
+    }
+
+    public void setPurchased() {
+        if (!status.equals(OrderStatus.NOT_PURCHASED))
+            throw new OrderInvalidProcessException(id);
+        this.status = OrderStatus.PURCHASED;
     }
 }

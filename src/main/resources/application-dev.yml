@@ -19,6 +19,7 @@ spring:
     username: root
     password: root
     driver-class-name: com.mysql.jdbc.Driver
+#    data: "classpath:user.sql"
   mandatory-file-encoding: utf-8
 
   devtools:
