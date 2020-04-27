@@ -1,0 +1,44 @@
+server:
+  port: 8080
+
+  servlet:
+    context-path: /
+    session:
+      cookie:
+        http-only: true
+      tracking-modes: cookie
+
+  error:
+    whitelabel:
+      enabled: false
+
+
+property:
+  app:
+    init: false
+
+spring:
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: update
+
+  profiles:
+    active: dev
+
+  mvc:
+    static-path-pattern: /api/cafe/img/**
+  resources:
+    static-locations: classpath:/static/
+    add-mappings: true
+
+  data:
+    rest:
+      base-path: /api
+
+security:
+  token:
+    issuer: security
+    expired: 30
+    refreshExpired: 60
+    signing-key: MIDAS
