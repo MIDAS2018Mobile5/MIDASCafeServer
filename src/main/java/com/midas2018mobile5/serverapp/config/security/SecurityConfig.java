@@ -2,11 +2,12 @@ package com.midas2018mobile5.serverapp.config.security;
 
 import com.midas2018mobile5.serverapp.config.security.api.entrypoint.ApiTokenAuthEntryPoint;
 import com.midas2018mobile5.serverapp.config.security.api.filter.ApiTokenAuthProcessingFilter;
+import com.midas2018mobile5.serverapp.config.security.api.filter.SecurityUserLoginProcessingFilter;
 import com.midas2018mobile5.serverapp.config.security.api.token.ApiTokenFactory;
+import com.midas2018mobile5.serverapp.config.security.common.handler.AccessApiHandler;
 import com.midas2018mobile5.serverapp.config.security.common.handler.SecurityUserLoginHandler;
 import com.midas2018mobile5.serverapp.config.security.common.repository.PersistTokenRepository;
 import com.midas2018mobile5.serverapp.dao.user.UserService;
-import com.midas2018mobile5.serverapp.repository.user.RolePermissionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +16,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -23,6 +23,7 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
@@ -34,12 +35,14 @@ import java.util.Arrays;
  */
 @Configuration
 @EnableWebSecurity
+@EnableRedisHttpSession
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final ApiTokenAuthEntryPoint apiTokenAuthEntryPoint;
-    private final PersistTokenRepository persistTokenRepository;
+    private final PersistTokenRepository persistenceTokenRepository;
     private final UserService userService;
+    private final AccessApiHandler accessApiHandler;
     private final SecurityUserLoginHandler securityUserLoginHandler;
     private final ApiTokenFactory apiTokenFactory;
 
@@ -47,8 +50,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/swagger-resources/**",
             "/swagger-ui.html",
             "/webjars/**",
-            "/api/users/signIn",
-            "/api/users/signUp"
+            "/api/signIn",
+            "/api/signOut"
     };
 
     private static final String rememberKey = "remember-me";
@@ -61,23 +64,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.httpBasic().disable().csrf().ignoringAntMatchers("/api/**");
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers(AUTH_WHITELIST).permitAll().anyRequest().authenticated()
+        http.csrf().ignoringAntMatchers("/api/**");
+        http.sessionManagement();
+        http.authorizeRequests().antMatchers(AUTH_WHITELIST).permitAll()
+                .anyRequest().authenticated()
                 .and()
                 .rememberMe().key(rememberKey)
-                .rememberMeParameter(rememberKey).rememberMeServices(persistentTokenBasedRememberMeServices())
+                .rememberMeParameter(rememberKey)
+                .rememberMeServices(persistentTokenBasedRememberMeServices())
                 .tokenValiditySeconds(3600)
                 .and()
-                .exceptionHandling().authenticationEntryPoint(apiTokenAuthEntryPoint);
-        http.addFilterBefore(buildApiTokenAuthProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
-        http.headers().cacheControl();
+                .exceptionHandling()
+                .authenticationEntryPoint(apiTokenAuthEntryPoint)
+                .and()
+                .addFilterBefore(buildApiUserLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(buildApiTokenAuthProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean
     public PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices() {
-        return new PersistentTokenBasedRememberMeServices(
-                rememberKey, userService, persistTokenRepository);
+        PersistentTokenBasedRememberMeServices rememberMeServices =
+                new PersistentTokenBasedRememberMeServices(rememberKey, userService, persistenceTokenRepository);
+        rememberMeServices.setAlwaysRemember(false);
+        rememberMeServices.setCookieName(rememberKey);
+        rememberMeServices.setTokenValiditySeconds(60 * 60 * 24 * 7);   // 1 week
+
+        return rememberMeServices;
     }
 
     @Bean
@@ -85,10 +97,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder(11);
     }
 
-    protected ApiTokenAuthProcessingFilter buildApiTokenAuthProcessingFilter() {
+    protected SecurityUserLoginProcessingFilter buildApiUserLoginProcessingFilter() throws Exception {
+        SecurityUserLoginProcessingFilter filter = new SecurityUserLoginProcessingFilter("/api/signIn", userService,
+                securityUserLoginHandler, persistentTokenBasedRememberMeServices());
+        filter.setAuthenticationManager(authenticationManager());
+        return filter;
+    }
+
+    protected ApiTokenAuthProcessingFilter buildApiTokenAuthProcessingFilter() throws Exception {
         SkipMatcher skipMatcher = new SkipMatcher("/api/**");
-        return new ApiTokenAuthProcessingFilter(skipMatcher,
-                userService, securityUserLoginHandler, apiTokenFactory);
+        ApiTokenAuthProcessingFilter filter = new ApiTokenAuthProcessingFilter(skipMatcher, userService,
+                accessApiHandler, apiTokenFactory);
+        filter.setAuthenticationManager(authenticationManager());
+        return filter;
     }
 
     public static class SkipMatcher implements RequestMatcher {
@@ -97,7 +118,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         public SkipMatcher(String processUrl) {
             skipRequestMatcher = new OrRequestMatcher(
-                    Arrays.asList(new AntPathRequestMatcher("/api/users/signIn"),
+                    Arrays.asList(new AntPathRequestMatcher("/api/signIn"),
                             new AntPathRequestMatcher("/api/users/signUp"))
             );
             antPathRequestMatcher = new AntPathRequestMatcher(processUrl);

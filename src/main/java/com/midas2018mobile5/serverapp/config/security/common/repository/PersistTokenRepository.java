@@ -4,10 +4,7 @@ import com.midas2018mobile5.serverapp.config.security.common.repository.vo.Remem
 import com.midas2018mobile5.serverapp.utils.JsonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.json.GsonJsonParser;
-import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Service;
@@ -24,8 +21,10 @@ import java.util.concurrent.TimeUnit;
 @Service
 @Slf4j
 public class PersistTokenRepository implements PersistentTokenRepository {
+    // Redis DB
     private final StringRedisTemplate stringRedisTemplate;
 
+    // Username: ID, Series: series, Token: token, Date: last_used
     @Override
     public void createNewToken(PersistentRememberMeToken token) {
         RememberToken rememberToken

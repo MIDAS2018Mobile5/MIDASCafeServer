@@ -1,7 +1,7 @@
 package com.midas2018mobile5.serverapp;
 
-import com.midas2018mobile5.serverapp.domain.user.RolePermission;
 import com.midas2018mobile5.serverapp.domain.user.Role;
+import com.midas2018mobile5.serverapp.domain.user.RolePermission;
 import com.midas2018mobile5.serverapp.domain.user.userEntity.Email;
 import com.midas2018mobile5.serverapp.domain.user.userEntity.Password;
 import com.midas2018mobile5.serverapp.domain.user.userEntity.User;

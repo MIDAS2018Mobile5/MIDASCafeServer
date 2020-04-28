@@ -10,6 +10,7 @@ import com.midas2018mobile5.serverapp.error.exception.user.UserPasswordInvalidEx
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -53,6 +54,14 @@ public class ErrorExceptionController {
         final ErrorCode accessdenied = ErrorCode.HANDLE_ACCESS_DENIED;
         log.error(accessdenied.getMessage() + ": {}", ex.getLocalizedMessage());
         return buildError(accessdenied);
+    }
+
+    @ExceptionHandler(value = BadCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    protected ErrorResponse handleBadCredentialsException(BadCredentialsException ex) {
+        final ErrorCode unauthorized = ErrorCode.UNAUTHORIZED;
+        log.error(unauthorized.getMessage() + ": {}", ex.getMessage());
+        return buildError(unauthorized);
     }
 
     @ExceptionHandler(value = CafeMenuNotFoundException.class)

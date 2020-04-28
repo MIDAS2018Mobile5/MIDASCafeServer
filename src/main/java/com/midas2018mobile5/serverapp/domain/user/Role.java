@@ -2,7 +2,10 @@ package com.midas2018mobile5.serverapp.domain.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.midas2018mobile5.serverapp.domain.user.userEntity.User;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;

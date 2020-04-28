@@ -75,13 +75,11 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional(readOnly = true)
-    public User validate(UserDto.SignInReq dto) {
+    public void validate(UserDto.SignInReq dto) {
         User user = findByUserId(dto.getUserid());
 
         if (!user.getPwd().isMatched(dto.getPassword()))
             throw new UserPasswordInvalidException(dto.getPassword());
-
-        return user;
     }
 
     public void deleteById(long id) {
