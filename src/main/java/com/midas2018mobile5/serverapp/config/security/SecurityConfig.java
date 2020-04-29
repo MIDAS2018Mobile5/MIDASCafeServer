@@ -6,12 +6,14 @@ import com.midas2018mobile5.serverapp.config.security.api.filter.SecurityUserLog
 import com.midas2018mobile5.serverapp.config.security.api.token.ApiTokenFactory;
 import com.midas2018mobile5.serverapp.config.security.common.handler.AccessApiHandler;
 import com.midas2018mobile5.serverapp.config.security.common.handler.SecurityUserLoginHandler;
-import com.midas2018mobile5.serverapp.config.security.common.repository.PersistTokenRepository;
+import com.midas2018mobile5.serverapp.config.security.common.provider.SecurityAuthenticationProvider;
+import com.midas2018mobile5.serverapp.config.security.common.repository.PersistTokenRepositoryImpl;
 import com.midas2018mobile5.serverapp.dao.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -39,10 +41,11 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final ApiTokenAuthEntryPoint apiTokenAuthEntryPoint;
-    private final PersistTokenRepository persistenceTokenRepository;
+    private final PersistTokenRepositoryImpl persistenceTokenRepository;
     private final UserService userService;
     private final AccessApiHandler accessApiHandler;
     private final SecurityUserLoginHandler securityUserLoginHandler;
+    private final SecurityAuthenticationProvider securityAuthenticationProvider;
     private final ApiTokenFactory apiTokenFactory;
 
     private final String[] AUTH_WHITELIST = {
@@ -66,11 +69,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(AUTH_WHITELIST).permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .rememberMe().key(rememberKey)
-                .rememberMeParameter(rememberKey)
-                .rememberMeServices(persistentTokenBasedRememberMeServices())
-                .tokenValiditySeconds(3600)
-                .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(apiTokenAuthEntryPoint)
                 .and()
@@ -78,15 +76,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(buildApiTokenAuthProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) {
+        auth.authenticationProvider(securityAuthenticationProvider);
+    }
+
     @Bean
     public PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices() {
-        PersistentTokenBasedRememberMeServices rememberMeServices =
-                new PersistentTokenBasedRememberMeServices(rememberKey, userService, persistenceTokenRepository);
-        rememberMeServices.setAlwaysRemember(false);
-        rememberMeServices.setCookieName(rememberKey);
-        rememberMeServices.setTokenValiditySeconds(60 * 60 * 24 * 7);   // 1 week
-
-        return rememberMeServices;
+        return new PersistentTokenBasedRememberMeServices(rememberKey, userService, persistenceTokenRepository);
     }
 
     @Bean
@@ -95,7 +92,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     protected SecurityUserLoginProcessingFilter buildApiUserLoginProcessingFilter() throws Exception {
-        SecurityUserLoginProcessingFilter filter = new SecurityUserLoginProcessingFilter("/api/signIn", userService,
+        SecurityUserLoginProcessingFilter filter = new SecurityUserLoginProcessingFilter("/api/signIn",
                 securityUserLoginHandler, persistentTokenBasedRememberMeServices());
         filter.setAuthenticationManager(authenticationManager());
         return filter;

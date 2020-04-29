@@ -3,15 +3,10 @@ server:
 
   servlet:
     context-path: /
-    session:
-      cookie:
-        http-only: true
-      tracking-modes: cookie
 
   error:
     whitelabel:
       enabled: false
-
 
 property:
   app:
@@ -39,6 +34,6 @@ spring:
 security:
   token:
     issuer: security
-    expired: 30
-    refreshExpired: 60
+    expired: 60
+    refreshExpired: 1440
     signing-key: MIDAS

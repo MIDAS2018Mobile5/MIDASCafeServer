@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 @Service
 @Slf4j
-public class PersistTokenRepository implements PersistentTokenRepository {
+public class PersistTokenRepositoryImpl implements PersistentTokenRepository {
     // Redis DB
     private final StringRedisTemplate stringRedisTemplate;
 

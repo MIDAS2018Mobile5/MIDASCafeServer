@@ -31,18 +31,15 @@ import java.io.IOException;
 public class SecurityUserLoginProcessingFilter extends AbstractAuthenticationProcessingFilter {
     public SecurityUserLoginProcessingFilter(
             String processUrl,
-            UserService userService,
             SecurityUserLoginHandler securityUserLoginHandler,
             PersistentTokenBasedRememberMeServices rememberMeServices
     ) {
         super(processUrl);
 
-        this.userService = userService;
         this.securityUserLoginHandler = securityUserLoginHandler;
         this.rememberMeServices = rememberMeServices;
     }
 
-    private final UserService userService;
     private final SecurityUserLoginHandler securityUserLoginHandler;
     private final PersistentTokenBasedRememberMeServices rememberMeServices;
 
@@ -64,7 +61,7 @@ public class SecurityUserLoginProcessingFilter extends AbstractAuthenticationPro
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         SecurityContextHolder.getContext().setAuthentication(authResult);
-        rememberMeServices.loginSuccess(request, response, authResult);
+//        rememberMeServices.loginSuccess(request, response, authResult);
         securityUserLoginHandler.onAuthenticationSuccess(request, response, authResult);
     }
 

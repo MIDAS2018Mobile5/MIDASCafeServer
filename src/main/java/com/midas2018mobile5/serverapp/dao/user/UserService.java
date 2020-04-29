@@ -11,12 +11,18 @@ import com.midas2018mobile5.serverapp.repository.user.RolePermissionRepository;
 import com.midas2018mobile5.serverapp.repository.user.RoleRepository;
 import com.midas2018mobile5.serverapp.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -27,6 +33,7 @@ import java.util.Optional;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -82,6 +89,21 @@ public class UserService implements UserDetailsService {
             throw new UserPasswordInvalidException(dto.getPassword());
 
         return user;
+    }
+
+    // Search JWT Auth info
+    @Transactional(readOnly = true)
+    public Authentication getAuthentication(String principal) {
+        UserDetails details = loadUserByUsername(principal);
+
+        if (details.getAuthorities().isEmpty())
+            throw new BadCredentialsException("Authentication Failed. User granted authority is empty.");
+
+        Object[] authorities = details.getAuthorities().stream().map(GrantedAuthority::getAuthority).toArray();
+
+        log.info("Api user attempt authentication. username={}, grantedAuthorities={}", principal, Arrays.toString(authorities));
+
+        return new UsernamePasswordAuthenticationToken(details.getUsername(), null, details.getAuthorities());
     }
 
     public void deleteById(long id) {

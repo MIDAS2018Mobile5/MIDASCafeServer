@@ -49,21 +49,6 @@ public class ApiTokenAuthProcessingFilter extends AbstractAuthenticationProcessi
         this.apiTokenFactory = apiTokenFactory;
     }
 
-    // Search JWT Auth info
-    @Transactional(readOnly = true)
-    public Authentication getAuthentication(String principal) {
-        UserDetails details = userService.loadUserByUsername(principal);
-
-        if (details.getAuthorities().isEmpty())
-            throw new BadCredentialsException("Authentication Failed. User granted authority is empty.");
-
-        Object[] authorities = details.getAuthorities().stream().map(GrantedAuthority::getAuthority).toArray();
-
-        log.info("Api user attempt authentication. username={}, grantedAuthorities={}", principal, Arrays.toString(authorities));
-
-        return new UsernamePasswordAuthenticationToken(details.getUsername(), null, details.getAuthorities());
-    }
-
     @Transactional(readOnly = true)
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
@@ -72,7 +57,7 @@ public class ApiTokenAuthProcessingFilter extends AbstractAuthenticationProcessi
         Map<String, Object> body = apiTokenFactory.getBody(accessToken);    // 토큰 검사
         String principal = (String) body.get("sub");    // 사용자 이름
 
-        return getAuthentication(principal);
+        return userService.getAuthentication(principal);
     }
 
     @Override

@@ -58,20 +58,6 @@ public class UserController {
         return new UserDto.Res(userService.create(dto));
     }
 
-    @PreAuthorize("isAuthenticated()")
-    @PostMapping(value = "/signOut")
-    @ResponseStatus(value = HttpStatus.OK)
-    public ResponseEntity<?> signOutUser(HttpServletRequest req, HttpServletResponse res) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        if (auth != null) {
-            rememberMeService.logout(req, res, auth);
-            new SecurityContextLogoutHandler().logout(req, res, auth);
-        }
-
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
     @PreAuthorize("isAuthenticated() and ((#userid == principal.username) or hasRole('ROLE_ADMIN'))")
     @PatchMapping(value = "/{userid}")
     @ResponseStatus(value = HttpStatus.OK)
