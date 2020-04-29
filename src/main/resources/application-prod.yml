@@ -2,14 +2,22 @@ server:
   port: 8080
 
 spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: root
+    password: root
+
   jpa:
     generate-ddl: true
     database: mysql
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    show-sql: true
 
   datasource:
     url: jdbc:mysql://localhost:3306/midasmobile5?createDatabaseIfNotExist=true&useUnicode=true&charaterEncoding=UTF-8&characterSetResults=UTF-8&allowPublicKeyRetrieval=true&useSSL=false
     username: root
     password: root
     driver-class-name: com.mysql.jdbc.Driver
+  #    data: "classpath:user.sql"
   mandatory-file-encoding: utf-8
