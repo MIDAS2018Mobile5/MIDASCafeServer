@@ -62,7 +62,6 @@ dependencies {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-data-json'
     }
     compile('org.springframework.boot:spring-boot-starter-security')
-    compile('org.springframework.session:spring-session-data-redis')
     compile("org.eclipse.paho:org.eclipse.paho.client.mqttv3:$pahoVersion")
     compile('com.google.code.gson:gson')
     compile("com.querydsl:querydsl-apt")
