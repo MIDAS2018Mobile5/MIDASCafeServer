@@ -61,4 +61,20 @@ public class OrderDto {
             this.status = order.getStatus();
         }
     }
+
+    @Getter
+    public static class Event {
+        private long id;
+        private String userid;
+        private String menuName;
+        private int amount;
+
+        @Builder
+        public Event(final Order order) {
+            this.id = order.getId();
+            this.userid = order.getUser().getUserid();
+            this.menuName = order.getCafe().getName();
+            this.amount = order.getAmount();
+        }
+    }
 }

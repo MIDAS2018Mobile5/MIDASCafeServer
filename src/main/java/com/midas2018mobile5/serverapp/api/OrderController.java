@@ -43,7 +43,7 @@ public class OrderController {
                 .map(OrderDto.Res::new);
     }
 
-    @PreAuthorize("isAuthenticated() and (#dto.getUserid() == principal.username)")
+    @PreAuthorize("isAuthenticated() and (#dto.getUserid() == principal)")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public OrderDto.Res newOrder(@RequestBody @Valid final OrderDto.Req dto) {
@@ -74,14 +74,14 @@ public class OrderController {
         return new OrderDto.Res(orderService.acceptOrderById(id));
     }
 
-    @PostAuthorize("isAuthenticated() and (returnObject.userid == principal.username)")
+    @PostAuthorize("isAuthenticated() and (returnObject.userid == principal)")
     @PatchMapping("/purchase/{id}")
     @ResponseStatus(HttpStatus.OK)
     public OrderDto.Res purchaseOrder(@PathVariable long id) {
         return new OrderDto.Res(orderService.purchaseOrderById(id));
     }
 
-    @PostAuthorize("isAuthenticated() and ((returnObject.userid == principal.username) or hasRole('ROLE_ADMIN'))")
+    @PostAuthorize("isAuthenticated() and ((returnObject.userid == principal) or hasRole('ROLE_ADMIN'))")
     @PatchMapping("/cancel/{id}")
     @ResponseStatus(HttpStatus.OK)
     public OrderDto.Res cacnelOrder(@PathVariable long id) {
