@@ -2,6 +2,7 @@ package com.midas2018mobile5.serverapp.repository.order;
 
 import com.midas2018mobile5.serverapp.domain.cafe.Cafe;
 import com.midas2018mobile5.serverapp.domain.order.Order;
+import com.midas2018mobile5.serverapp.domain.order.OrderStatus;
 import com.midas2018mobile5.serverapp.domain.order.QOrder;
 import com.midas2018mobile5.serverapp.domain.user.userEntity.User;
 import com.querydsl.jpa.JPQLQuery;
@@ -20,7 +21,9 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements Or
     @Override
     public Order findNotPurchasedOrder(User user, Cafe menu) {
         final QOrder order = QOrder.order;
-        final JPQLQuery<Order> query = from(order).where(order.user.eq(user).and(order.cafe.eq(menu)));
+        final JPQLQuery<Order> query = from(order).where(order.user.eq(user)
+                .and(order.cafe.eq(menu))
+                .and(order.status.eq(OrderStatus.NOT_PURCHASED)));
 
         return query.fetchFirst();
     }

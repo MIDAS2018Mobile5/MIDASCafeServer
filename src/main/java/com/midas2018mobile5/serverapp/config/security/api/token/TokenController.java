@@ -32,9 +32,8 @@ import java.util.Map;
  * Blog : https://blog.neonkid.xyz
  * Github : https://github.com/NEONKID
  */
-@RepositoryRestController
+@RestController
 @RequiredArgsConstructor
-@ResponseBody
 public class TokenController {
     private final PersistentTokenBasedRememberMeServices rememberMeService;
     private final ApiTokenFactory apiTokenFactory;
@@ -55,7 +54,7 @@ public class TokenController {
 //    }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping(value = "/token")
+    @PostMapping(value = "/api/token")
     @ResponseStatus(value = HttpStatus.OK)
     public RefreshToken refresh(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         String accessToken = apiTokenFactory.extract(token);
