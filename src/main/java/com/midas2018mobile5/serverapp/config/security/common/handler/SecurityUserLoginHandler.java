@@ -35,9 +35,9 @@ public class SecurityUserLoginHandler implements AuthenticationSuccessHandler, A
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         log.error("FAILURE: " + request.getMethod() + " " + request.getRequestURI());
 
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setStatus(HttpStatus.FORBIDDEN.value());
         response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-        response.getWriter().write(JsonUtils.toJson(buildError(ErrorCode.UNAUTHORIZED)));
+        response.getWriter().write(JsonUtils.toJson(ErrorResponse.buildError(ErrorCode.UNAUTHORIZED)));
         response.getWriter().flush();
     }
 
@@ -55,13 +55,5 @@ public class SecurityUserLoginHandler implements AuthenticationSuccessHandler, A
         response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         response.getWriter().write(JsonUtils.toJson(dto));
         response.getWriter().flush();
-    }
-
-    private ErrorResponse buildError(ErrorCode errorCode) {
-        return ErrorResponse.builder()
-                .code(errorCode.getCode())
-                .status(errorCode.getStatus())
-                .message(errorCode.getMessage())
-                .build();
     }
 }

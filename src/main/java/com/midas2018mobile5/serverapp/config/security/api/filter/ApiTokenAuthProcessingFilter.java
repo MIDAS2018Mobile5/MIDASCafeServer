@@ -10,6 +10,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,6 +22,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -55,9 +57,11 @@ public class ApiTokenAuthProcessingFilter extends AbstractAuthenticationProcessi
         if (details.getAuthorities().isEmpty())
             throw new BadCredentialsException("Authentication Failed. User granted authority is empty.");
 
-        log.info("Api user attempt authentication. username={}, grantedAuthorities={}", principal, details.getAuthorities());
+        Object[] authorities = details.getAuthorities().stream().map(GrantedAuthority::getAuthority).toArray();
 
-        return new UsernamePasswordAuthenticationToken(details, null, details.getAuthorities());
+        log.info("Api user attempt authentication. username={}, grantedAuthorities={}", principal, Arrays.toString(authorities));
+
+        return new UsernamePasswordAuthenticationToken(details.getUsername(), null, details.getAuthorities());
     }
 
     @Transactional(readOnly = true)

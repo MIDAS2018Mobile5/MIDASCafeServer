@@ -41,7 +41,7 @@ public class ApiTokenFactory {
             throw new BadCredentialsException("User doesn't have any privileges");
 
         Claims claims = Jwts.claims().setSubject(username);
-        claims.put("scopes", grantedAuthorities.stream().map(Object::toString).collect(Collectors.toList()));
+        claims.put("scopes", grantedAuthorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
 
         LocalDateTime now = LocalDateTime.now();
 
@@ -60,7 +60,7 @@ public class ApiTokenFactory {
             throw new UsernameNotFoundException("Can't create token without username");
 
         Claims claims = Jwts.claims().setSubject(username);
-        List<String> scopes  = getGrantedAuthorities(authentication).stream().map(Object::toString).collect(Collectors.toList());
+        List<String> scopes  = getGrantedAuthorities(authentication).stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
         scopes.add(ApiTokenData.AUTHORIZATION_REFRESH_TOKEN_NAME);
         claims.put("scopes", scopes);
 

@@ -2,6 +2,7 @@ package com.midas2018mobile5.serverapp.config.security.api.filter;
 
 import com.midas2018mobile5.serverapp.config.security.common.handler.SecurityUserLoginHandler;
 import com.midas2018mobile5.serverapp.dao.user.UserService;
+import com.midas2018mobile5.serverapp.domain.user.userEntity.User;
 import com.midas2018mobile5.serverapp.dto.user.UserDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
@@ -12,6 +13,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.FilterChain;
@@ -44,28 +46,18 @@ public class SecurityUserLoginProcessingFilter extends AbstractAuthenticationPro
     private final SecurityUserLoginHandler securityUserLoginHandler;
     private final PersistentTokenBasedRememberMeServices rememberMeServices;
 
+    @Transactional(readOnly = true)
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException, IOException, ServletException {
         if (!HttpMethod.POST.name().equals(request.getMethod()))
             throw new AuthenticationServiceException("Authentication method not supported");
 
-        UserDto.SignInReq dto = UserDto.SignInReq.builder()
-                .userid(request.getParameter("userid"))
-                .password(request.getParameter("password"))
-                .build();
+        String userid = request.getParameter("userid");
+        String password = request.getParameter("password");
 
-        if (StringUtils.isEmpty(dto.getUserid()) || StringUtils.isEmpty(dto.getPassword()))
-            throw new AuthenticationServiceException("username or password is not valid.");
-
-        try {
-            userService.validate(dto);
-        } catch (Exception ex) {
-            throw new AuthenticationServiceException("username or password is not valid.");
-        }
-
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(dto.getUserid(), dto.getPassword());
-        log.info("User attempt authentication. username={}", dto.getUserid());
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userid, password);
+        log.info("User attempt authentication. username={}", userid);
         return this.getAuthenticationManager().authenticate(token);
     }
 
