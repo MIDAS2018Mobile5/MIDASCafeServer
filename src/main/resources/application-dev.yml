@@ -11,7 +11,6 @@ logging:
       springframework:
         security: debug
 
-
 spring:
 #   If use session based with remember-me
 #   but not recommended because not fully implemented
