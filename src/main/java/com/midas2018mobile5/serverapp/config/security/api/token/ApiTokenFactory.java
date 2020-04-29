@@ -1,18 +1,23 @@
 package com.midas2018mobile5.serverapp.config.security.api.token;
 
 import com.midas2018mobile5.serverapp.config.security.api.token.data.ApiTokenData;
-import com.midas2018mobile5.serverapp.domain.user.Role;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -26,9 +31,17 @@ import java.util.stream.Collectors;
 public class ApiTokenFactory {
     private final ApiTokenData apiTokenData;
 
-    public String createToken(String username, Collection<Role> roles) {
+    public String createToken(Authentication authentication) {
+        String username = authentication.getName();
+        if (StringUtils.isEmpty(username))
+            throw new UsernameNotFoundException("Can't create token without username");
+
+        List<GrantedAuthority> grantedAuthorities = (List<GrantedAuthority>) authentication.getAuthorities();
+        if (grantedAuthorities == null || grantedAuthorities.isEmpty())
+            throw new BadCredentialsException("User doesn't have any privileges");
+
         Claims claims = Jwts.claims().setSubject(username);
-        claims.put("scopes", roles.stream().map(Object::toString).collect(Collectors.toList()));
+        claims.put("scopes", grantedAuthorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
 
         LocalDateTime now = LocalDateTime.now();
 
@@ -41,12 +54,15 @@ public class ApiTokenFactory {
                 .compact();
     }
 
-    public String createRefreshToken(String username, Collection<Role> roles) {
-        Claims claims = Jwts.claims().setSubject(username);
+    public String createRefreshToken(Authentication authentication) {
+        String username = authentication.getName();
+        if (StringUtils.isEmpty(username))
+            throw new UsernameNotFoundException("Can't create token without username");
 
-        List<String> scopes  = roles.stream().map(Object::toString).collect(Collectors.toList());
+        Claims claims = Jwts.claims().setSubject(username);
+        List<String> scopes  = getGrantedAuthorities(authentication).stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
         scopes.add(ApiTokenData.AUTHORIZATION_REFRESH_TOKEN_NAME);
-        claims.put("roles", scopes);
+        claims.put("scopes", scopes);
 
         LocalDateTime currentTime = LocalDateTime.now();
 
@@ -60,6 +76,13 @@ public class ApiTokenFactory {
                         .atZone(ZoneId.systemDefault()).toInstant()))
                 .signWith(SignatureAlgorithm.HS512, apiTokenData.getSigningKey())
                 .compact();
+    }
+
+    public List<? extends GrantedAuthority> getGrantedAuthorities(Authentication authentication) {
+        List<GrantedAuthority> grantedAuthorities = (List<GrantedAuthority>) authentication.getAuthorities();
+        if (grantedAuthorities == null || grantedAuthorities.isEmpty())
+            throw new BadCredentialsException("User doesn't have any privileges");
+        return grantedAuthorities;
     }
 
     public Map<String, Object> getBody(String token){
@@ -76,6 +99,7 @@ public class ApiTokenFactory {
         return header.substring(ApiTokenData.AUTHORIZATION_HEADER_PREFIX.length());
     }
 
+    // Token 유효성 체크
     private Jws<Claims> parseClaims(String token) {
         try {
             return Jwts.parser()

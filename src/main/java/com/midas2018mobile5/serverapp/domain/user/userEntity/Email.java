@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.io.Serializable;
 
 /**
  * Created by Neon K.I.D on 4/24/20
@@ -16,7 +17,7 @@ import javax.persistence.Embeddable;
 @Embeddable
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Email {
+public class Email implements Serializable {
     @javax.validation.constraints.Email
     @Column(name = "email", nullable = false)
     private String value;

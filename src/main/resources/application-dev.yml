@@ -12,9 +12,12 @@ logging:
         security: debug
 
 spring:
-  redis:
-    host: localhost
-    port: 6379
+#   If use session based with remember-me
+#   but not recommended because not fully implemented
+#  redis:
+#    host: localhost
+#    port: 6379
+#    password: redis
 
   jpa:
     generate-ddl: true

@@ -3,11 +3,9 @@ package com.midas2018mobile5.serverapp.domain.user;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
-import java.util.Collection;
 
 /**
  * Created by Neon K.I.D on 4/26/20

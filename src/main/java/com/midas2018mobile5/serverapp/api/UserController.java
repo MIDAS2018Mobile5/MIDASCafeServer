@@ -1,10 +1,8 @@
 package com.midas2018mobile5.serverapp.api;
 
-import com.midas2018mobile5.serverapp.config.security.api.token.ApiTokenFactory;
 import com.midas2018mobile5.serverapp.dao.user.UserSearchService;
 import com.midas2018mobile5.serverapp.dao.user.UserService;
 import com.midas2018mobile5.serverapp.domain.user.Role;
-import com.midas2018mobile5.serverapp.domain.user.userEntity.User;
 import com.midas2018mobile5.serverapp.dto.user.UserDto;
 import com.midas2018mobile5.serverapp.dto.user.UserSearchType;
 import com.midas2018mobile5.serverapp.model.CustomPageRequest;
@@ -18,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,7 +35,7 @@ import javax.validation.Valid;
 public class UserController {
     private final UserService userService;
     private final UserSearchService userSearchService;
-    private final ApiTokenFactory apiTokenFactory;
+    private final PersistentTokenBasedRememberMeServices rememberMeService;
 
     @Secured(Role.ROLES.ADMIN)
     @GetMapping
@@ -57,28 +56,6 @@ public class UserController {
     @ResponseStatus(value = HttpStatus.CREATED)
     public UserDto.Res registerUser(@RequestBody @Valid final UserDto.SignUpReq dto) {
         return new UserDto.Res(userService.create(dto));
-    }
-
-    @PostMapping(value = "/signIn")
-    @ResponseStatus(value = HttpStatus.OK)
-    public UserDto.SignInRes validateUser(@RequestBody @Valid final UserDto.SignInReq dto) {
-        User user = userService.validate(dto);
-        return UserDto.SignInRes.builder()
-                .user(user)
-                .token(apiTokenFactory.createToken(user.getUserid(), user.getRoles()))
-                .build();
-    }
-
-    @PreAuthorize("isAuthenticated()")
-    @PostMapping(value = "/signOut")
-    @ResponseStatus(value = HttpStatus.OK)
-    public ResponseEntity<?> signOutUser(HttpServletRequest req, HttpServletResponse res) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        if (auth != null)
-            new SecurityContextLogoutHandler().logout(req, res, auth);
-
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PreAuthorize("isAuthenticated() and ((#userid == principal.username) or hasRole('ROLE_ADMIN'))")

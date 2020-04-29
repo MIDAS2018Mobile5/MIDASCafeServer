@@ -1,6 +1,5 @@
 package com.midas2018mobile5.serverapp.dto.user;
 
-import com.midas2018mobile5.serverapp.domain.user.Role;
 import com.midas2018mobile5.serverapp.domain.user.userEntity.Email;
 import com.midas2018mobile5.serverapp.domain.user.userEntity.Password;
 import com.midas2018mobile5.serverapp.domain.user.userEntity.User;
@@ -12,7 +11,6 @@ import org.springframework.security.core.GrantedAuthority;
 
 import javax.validation.Valid;
 import java.util.Collection;
-import java.util.Collections;
 
 /**
  * Created by Neon K.I.D on 4/24/20
@@ -60,7 +58,7 @@ public class UserDto {
     }
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @NoArgsConstructor(access = AccessLevel.PUBLIC)
     public static class SignInReq {
         @Valid
         public String userid;
@@ -121,15 +119,15 @@ public class UserDto {
 
     @Getter
     public static class SignInRes {
-        private User user;
         private String token;
+        private String refreshToken;
         private Collection<? extends GrantedAuthority> authorities;
 
         @Builder
-        public SignInRes(User user, String token) {
-            this.user = user;
+        public SignInRes(String token, String refreshToken, Collection<? extends GrantedAuthority> authorities) {
             this.token = token;
-            this.authorities = user.getRoles();
+            this.refreshToken = refreshToken;
+            this.authorities = authorities;
         }
     }
 }

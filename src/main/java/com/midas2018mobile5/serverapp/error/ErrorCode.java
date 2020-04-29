@@ -22,6 +22,7 @@ public enum ErrorCode {
     USER_NOT_FOUND(400, "U001", "User not found"),
     USER_DUPLICATION(400, "U002", "User ID is exists"),
     LOGIN_INPUT_INVALID(400, "U003", "Login is invalid"),
+    TOKEN_EXPIRED(403, "U004", "Token is Expired"),
 
     // Cafe
     MENU_NOT_FOUND(400, "M001", "Menu not found"),

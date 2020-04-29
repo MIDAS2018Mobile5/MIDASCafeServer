@@ -10,6 +10,7 @@ import com.midas2018mobile5.serverapp.error.exception.user.UserPasswordInvalidEx
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -36,7 +37,7 @@ public class ErrorExceptionController {
     protected ErrorResponse handleUserNotFoundException(UserNotFoundException ex) {
         final ErrorCode userNotFound = ErrorCode.USER_NOT_FOUND;
         log.error(userNotFound.getMessage(), ex.getId());
-        return buildError(userNotFound);
+        return ErrorResponse.buildError(userNotFound);
     }
 
     @ExceptionHandler(value = UserPasswordInvalidException.class)
@@ -44,7 +45,7 @@ public class ErrorExceptionController {
     protected ErrorResponse handleUserPasswordInvalidException(UserPasswordInvalidException ex) {
         final ErrorCode passwordInvalid = ErrorCode.LOGIN_INPUT_INVALID;
         log.error(passwordInvalid.getMessage() + ": {}", ex.getPassword());
-        return buildError(passwordInvalid);
+        return ErrorResponse.buildError(passwordInvalid);
     }
 
     @ExceptionHandler(value = AccessDeniedException.class)
@@ -52,7 +53,15 @@ public class ErrorExceptionController {
     protected ErrorResponse handleAccessDeniedException(AccessDeniedException ex) {
         final ErrorCode accessdenied = ErrorCode.HANDLE_ACCESS_DENIED;
         log.error(accessdenied.getMessage() + ": {}", ex.getLocalizedMessage());
-        return buildError(accessdenied);
+        return ErrorResponse.buildError(accessdenied);
+    }
+
+    @ExceptionHandler(value = BadCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    protected ErrorResponse handleBadCredentialsException(BadCredentialsException ex) {
+        final ErrorCode unauthorized = ErrorCode.UNAUTHORIZED;
+        log.error(unauthorized.getMessage() + ": {}", ex.getMessage());
+        return ErrorResponse.buildError(unauthorized);
     }
 
     @ExceptionHandler(value = CafeMenuNotFoundException.class)
@@ -60,28 +69,28 @@ public class ErrorExceptionController {
     protected ErrorResponse handleCafeMenuNotFoundException(CafeMenuNotFoundException ex) {
         final ErrorCode menuNotFound = ErrorCode.MENU_NOT_FOUND;
         log.error(menuNotFound.getMessage(), ex.getMenuName());
-        return buildError(menuNotFound);
+        return ErrorResponse.buildError(menuNotFound);
     }
 
     @ExceptionHandler(value = OrderInvalidProcessException.class)
     protected ErrorResponse handleOrderInvalidProcessException(OrderInvalidProcessException ex) {
         final ErrorCode invalidOrderChange = ErrorCode.BAD_ORDER_CHANGE;
         log.error(invalidOrderChange.getMessage() + ": {}", ex.getId());
-        return buildError(invalidOrderChange);
+        return ErrorResponse.buildError(invalidOrderChange);
     }
 
     @ExceptionHandler(value = OrderNotFoundException.class)
     protected ErrorResponse handlerOrderNotFoundException(OrderNotFoundException ex) {
         final ErrorCode orderNotFound = ErrorCode.ORDER_NOT_FOUND;
         log.error(orderNotFound.getMessage() + ": {}", ex.getId());
-        return buildError(orderNotFound);
+        return ErrorResponse.buildError(orderNotFound);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     protected ErrorResponse handleMethodArgumentNotValidExcepteion(MethodArgumentNotValidException ex) {
         final List<ErrorResponse.CustomFieldError> fieldErrors = getFieldErrors(ex.getBindingResult());
-        return buildCustomFieldErrors(ErrorCode.INVALID_INPUT_VALUE, fieldErrors);
+        return ErrorResponse.buildCustomFieldErrors(ErrorCode.INVALID_INPUT_VALUE, fieldErrors);
     }
 
     @ExceptionHandler(UserDuplicationException.class)
@@ -89,7 +98,7 @@ public class ErrorExceptionController {
     protected ErrorResponse handleUserDuplicationException(UserDuplicationException ex) {
         final ErrorCode code = ErrorCode.USER_DUPLICATION;
         log.error(ex.getMessage(), ex.getUserid() + ex.getField());
-        return buildError(code);
+        return ErrorResponse.buildError(code);
     }
 
     @ExceptionHandler(CafeMenuDuplicationException.class)
@@ -97,7 +106,7 @@ public class ErrorExceptionController {
     protected ErrorResponse handleCafeMenuDuplicationException(CafeMenuDuplicationException ex) {
         final ErrorCode code = ErrorCode.MENU_DUPLICATION;
         log.error(ex.getMessage(), ex.getName());
-        return buildError(code);
+        return ErrorResponse.buildError(code);
     }
 
     private List<ErrorResponse.CustomFieldError> getFieldErrors(BindingResult bindingResult) {
@@ -107,21 +116,5 @@ public class ErrorExceptionController {
                 .field(error.getField()).value((String) error.getRejectedValue())
                 .build())
                 .collect(Collectors.toList());
-    }
-
-    private ErrorResponse buildError(ErrorCode errorCode) {
-        return ErrorResponse.builder()
-                .code(errorCode.getCode())
-                .status(errorCode.getStatus())
-                .message(errorCode.getMessage())
-                .build();
-    }
-
-    private ErrorResponse buildCustomFieldErrors(ErrorCode errorCode, List<ErrorResponse.CustomFieldError> errors) {
-        return ErrorResponse.builder()
-                .code(errorCode.getCode())
-                .status(errorCode.getStatus())
-                .message(errorCode.getMessage())
-                .build();
     }
 }

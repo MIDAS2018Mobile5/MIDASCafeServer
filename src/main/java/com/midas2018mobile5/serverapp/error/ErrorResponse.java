@@ -29,6 +29,23 @@ public class ErrorResponse {
         this.errors = initErrors(errors);
     }
 
+    public static ErrorResponse buildError(ErrorCode errorCode) {
+        return ErrorResponse.builder()
+                .code(errorCode.getCode())
+                .status(errorCode.getStatus())
+                .message(errorCode.getMessage())
+                .build();
+    }
+
+    public static ErrorResponse buildCustomFieldErrors(ErrorCode errorCode,
+                                                        List<ErrorResponse.CustomFieldError> errors) {
+        return ErrorResponse.builder()
+                .code(errorCode.getCode())
+                .status(errorCode.getStatus())
+                .message(errorCode.getMessage())
+                .build();
+    }
+
     private List<CustomFieldError> initErrors(List<CustomFieldError> errors) {
         return (errors == null) ? new ArrayList<>() : errors;
     }
