@@ -1,6 +1,6 @@
 package com.midas2018mobile5.serverapp.repository.order;
 
-import com.midas2018mobile5.serverapp.domain.order.Order;
+import com.midas2018mobile5.serverapp.domain.order.Mcorder;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Blog : https://blog.neonkid.xyz
  * Github : https://github.com/NEONKID
  */
-public interface OrderRepository extends JpaRepository<Order, Long>, OrderSupportRepository {
+public interface OrderRepository extends JpaRepository<Mcorder, Long>, OrderSupportRepository {
 }

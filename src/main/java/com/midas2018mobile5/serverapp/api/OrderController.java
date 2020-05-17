@@ -5,10 +5,11 @@ import com.midas2018mobile5.serverapp.dao.order.OrderSearchService;
 import com.midas2018mobile5.serverapp.dao.order.OrderService;
 import com.midas2018mobile5.serverapp.dao.user.UserService;
 import com.midas2018mobile5.serverapp.domain.cafe.Cafe;
-import com.midas2018mobile5.serverapp.domain.order.Order;
+import com.midas2018mobile5.serverapp.domain.order.Mcorder;
 import com.midas2018mobile5.serverapp.domain.user.Role;
 import com.midas2018mobile5.serverapp.domain.user.userEntity.User;
 import com.midas2018mobile5.serverapp.dto.order.OrderDto;
+import com.midas2018mobile5.serverapp.dto.order.OrderSearchType;
 import com.midas2018mobile5.serverapp.model.CustomPageRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,7 +27,7 @@ import javax.validation.Valid;
  * Blog : https://blog.neonkid.xyz
  * Github : https://github.com/NEONKID
  */
-@RequestMapping("/orders")
+@RequestMapping("/mcorders")
 @RepositoryRestController
 @RequiredArgsConstructor
 @ResponseBody
@@ -36,10 +37,12 @@ public class OrderController {
     private final OrderService orderService;
     private final OrderSearchService orderSearchService;
 
-    @Secured(Role.ROLES.ADMIN)
+    @PreAuthorize("isAuthenticated() and ((#value == principal) or (hasRole('ROLE_ADMIN')))")
     @GetMapping
-    public Page<OrderDto.Res> getOrderList(final CustomPageRequest pageRequest) {
-        return orderSearchService.search("", pageRequest.of("createdAt"))
+    public Page<OrderDto.Res> getOrderList(@RequestParam(name = "type") final OrderSearchType type,
+                                           @RequestParam(name = "value", required = false) final String value,
+                                           final CustomPageRequest pageRequest) {
+        return orderSearchService.search(type, value, pageRequest.of("createdAt"))
                 .map(OrderDto.Res::new);
     }
 
@@ -50,7 +53,7 @@ public class OrderController {
         User curUser = userService.findByUserId(dto.getUserid());
         Cafe menu = cafeService.findByName(dto.getMenuName());
 
-        Order oldOrder = orderService.findNotPurchased(curUser, menu);
+        Mcorder oldOrder = orderService.findNotPurchased(curUser, menu);
 
         if (oldOrder == null)
             oldOrder = dto.toEntity(curUser, menu);

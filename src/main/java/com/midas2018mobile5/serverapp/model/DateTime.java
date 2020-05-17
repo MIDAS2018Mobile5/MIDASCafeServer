@@ -27,6 +27,6 @@ public class DateTime {
     private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @Column(name = "update_at", nullable = false, updatable = false)
+    @Column(name = "update_at", nullable = false)
     private LocalDateTime updateAt;
 }

@@ -1,7 +1,7 @@
 package com.midas2018mobile5.serverapp.dto.order;
 
 import com.midas2018mobile5.serverapp.domain.cafe.Cafe;
-import com.midas2018mobile5.serverapp.domain.order.Order;
+import com.midas2018mobile5.serverapp.domain.order.Mcorder;
 import com.midas2018mobile5.serverapp.domain.order.OrderStatus;
 import com.midas2018mobile5.serverapp.domain.user.userEntity.User;
 import lombok.AccessLevel;
@@ -36,8 +36,8 @@ public class OrderDto {
             this.amount = amount;
         }
 
-        public Order toEntity(User user, Cafe menu) {
-            return Order.builder()
+        public Mcorder toEntity(User user, Cafe menu) {
+            return Mcorder.builder()
                     .user(user)
                     .cafe(menu)
                     .amount(amount)
@@ -53,7 +53,7 @@ public class OrderDto {
         private String menuName;
         private OrderStatus status;
 
-        public Res(Order order) {
+        public Res(Mcorder order) {
             this.id = order.getId();
             this.userid = order.getUser().getUserid();
             this.amount = order.getAmount();
@@ -70,7 +70,7 @@ public class OrderDto {
         private int amount;
 
         @Builder
-        public Event(final Order order) {
+        public Event(final Mcorder order) {
             this.id = order.getId();
             this.userid = order.getUser().getUserid();
             this.menuName = order.getCafe().getName();

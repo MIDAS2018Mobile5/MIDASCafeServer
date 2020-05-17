@@ -21,7 +21,7 @@ import javax.persistence.*;
 @Table(name = "cafe_order")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Order extends DateTime {
+public class Mcorder extends DateTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -42,7 +42,7 @@ public class Order extends DateTime {
     private OrderStatus status;
 
     @Builder
-    public Order(User user, int amount, Cafe cafe) {
+    public Mcorder(User user, int amount, Cafe cafe) {
         this.user = user;
         this.amount = amount;
         this.cafe = cafe;

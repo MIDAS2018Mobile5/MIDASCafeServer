@@ -51,7 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final String[] AUTH_WHITELIST = {
             "/swagger-resources/**",
             "/swagger-ui.html",
-            "/webjars/**"
+            "/webjars/**",
     };
 
     private static final String rememberKey = "remember-me";

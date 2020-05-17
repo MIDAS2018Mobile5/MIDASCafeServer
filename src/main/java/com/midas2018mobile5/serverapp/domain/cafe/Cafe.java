@@ -1,6 +1,6 @@
 package com.midas2018mobile5.serverapp.domain.cafe;
 
-import com.midas2018mobile5.serverapp.domain.order.Order;
+import com.midas2018mobile5.serverapp.domain.order.Mcorder;
 import com.midas2018mobile5.serverapp.dto.cafe.CafeDto;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -43,7 +43,7 @@ public class Cafe {
     private CafeImage image;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "cafe", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Order> orders = new HashSet<>();
+    private Set<Mcorder> orders = new HashSet<>();
 
     @Builder
     public Cafe(String name, String desc, int price, MultipartFile file) throws IOException {

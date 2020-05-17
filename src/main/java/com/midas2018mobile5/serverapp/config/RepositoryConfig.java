@@ -1,6 +1,6 @@
 package com.midas2018mobile5.serverapp.config;
 
-import com.midas2018mobile5.serverapp.domain.order.Order;
+import com.midas2018mobile5.serverapp.domain.order.Mcorder;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurerAdapter;
@@ -14,6 +14,6 @@ import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurerAdapt
 public class RepositoryConfig extends RepositoryRestConfigurerAdapter {
     @Override
     public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
-        config.exposeIdsFor(Order.class);
+        config.exposeIdsFor(Mcorder.class);
     }
 }
