@@ -1,7 +1,8 @@
 package com.midas2018mobile5.serverapp.dao.order;
 
-import com.midas2018mobile5.serverapp.domain.order.Order;
-import com.midas2018mobile5.serverapp.domain.order.QOrder;
+import com.midas2018mobile5.serverapp.domain.order.Mcorder;
+import com.midas2018mobile5.serverapp.domain.order.QMcorder;
+import com.midas2018mobile5.serverapp.dto.order.OrderSearchType;
 import com.querydsl.jpa.JPQLQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -21,14 +22,31 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class OrderSearchService extends QuerydslRepositorySupport {
     public OrderSearchService() {
-        super(Order.class);
+        super(Mcorder.class);
     }
 
-    public Page<Order> search(final String value, final Pageable pageable) {
-        final QOrder order = QOrder.order;
-        final JPQLQuery<Order> query = from(order).fetchAll();
+    public Page<Mcorder> search(final OrderSearchType type, final String value, final Pageable pageable) {
+        final QMcorder order = QMcorder.mcorder;
+        final JPQLQuery<Mcorder> query;
 
-        final List<Order> orderList = getQuerydsl().applyPagination(pageable, query).fetch();
-        return new PageImpl<>(orderList, pageable, query.fetchCount());
+        switch (type) {
+            case USERID:
+                query = from(order).where(order.user.userid.stringValue().likeIgnoreCase(value + "%"));
+                break;
+
+            case STATUS:
+                query = from(order).where(order.status.stringValue().likeIgnoreCase(value + "%"));
+                break;
+
+            case ALL:
+                query = from(order).fetchAll();
+                break;
+
+            default:
+                throw new IllegalArgumentException();
+        }
+
+        final List<Mcorder> orders = getQuerydsl().applyPagination(pageable, query).fetch();
+        return new PageImpl<>(orders, pageable, query.fetchCount());
     }
 }

@@ -1,7 +1,7 @@
 package com.midas2018mobile5.serverapp.domain.user.userEntity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.midas2018mobile5.serverapp.domain.order.Order;
+import com.midas2018mobile5.serverapp.domain.order.Mcorder;
 import com.midas2018mobile5.serverapp.domain.user.Role;
 import com.midas2018mobile5.serverapp.dto.user.UserDto;
 import com.midas2018mobile5.serverapp.model.DateTime;
@@ -57,7 +57,7 @@ public class User extends DateTime implements UserDetails {
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    private Set<Order> orders = new LinkedHashSet<>();
+    private Set<Mcorder> orders = new LinkedHashSet<>();
 
 //    @JsonIgnore
 //    @ManyToMany(cascade = CascadeType.ALL)

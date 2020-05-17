@@ -1,7 +1,7 @@
 package com.midas2018mobile5.serverapp.repository.order;
 
 import com.midas2018mobile5.serverapp.domain.cafe.Cafe;
-import com.midas2018mobile5.serverapp.domain.order.Order;
+import com.midas2018mobile5.serverapp.domain.order.Mcorder;
 import com.midas2018mobile5.serverapp.domain.user.userEntity.User;
 
 /**
@@ -10,5 +10,5 @@ import com.midas2018mobile5.serverapp.domain.user.userEntity.User;
  * Github : https://github.com/NEONKID
  */
 public interface OrderSupportRepository {
-    Order findNotPurchasedOrder(User user, Cafe menu);
+    Mcorder findNotPurchasedOrder(User user, Cafe menu);
 }

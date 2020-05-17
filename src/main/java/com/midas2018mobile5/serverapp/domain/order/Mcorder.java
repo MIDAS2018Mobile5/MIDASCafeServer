@@ -21,7 +21,7 @@ import javax.persistence.*;
 @Table(name = "cafe_order")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class MCOrder extends DateTime {
+public class Mcorder extends DateTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -39,14 +39,14 @@ public class MCOrder extends DateTime {
 
     @Column
     @Enumerated(EnumType.STRING)
-    private MCOrderStatus status;
+    private OrderStatus status;
 
     @Builder
-    public MCOrder(User user, int amount, Cafe cafe) {
+    public Mcorder(User user, int amount, Cafe cafe) {
         this.user = user;
         this.amount = amount;
         this.cafe = cafe;
-        this.status = MCOrderStatus.NOT_PURCHASED;
+        this.status = OrderStatus.NOT_PURCHASED;
     }
 
     public void update(OrderDto.Req dto) {
@@ -54,24 +54,24 @@ public class MCOrder extends DateTime {
     }
 
     public void setReady() {
-        if (!status.equals(MCOrderStatus.PURCHASED))
+        if (!status.equals(OrderStatus.PURCHASED))
             throw new OrderInvalidProcessException(id);
-        this.status = MCOrderStatus.READY;
+        this.status = OrderStatus.READY;
     }
 
     public void setFinish() {
-        if (!status.equals(MCOrderStatus.READY))
+        if (!status.equals(OrderStatus.READY))
             throw new OrderInvalidProcessException(id);
-        this.status = MCOrderStatus.FINISHED;
+        this.status = OrderStatus.FINISHED;
     }
 
     public void setCancel() {
-        this.status = MCOrderStatus.CANCELED;
+        this.status = OrderStatus.CANCELED;
     }
 
     public void setPurchased() {
-        if (!status.equals(MCOrderStatus.NOT_PURCHASED))
+        if (!status.equals(OrderStatus.NOT_PURCHASED))
             throw new OrderInvalidProcessException(id);
-        this.status = MCOrderStatus.PURCHASED;
+        this.status = OrderStatus.PURCHASED;
     }
 }

@@ -5,6 +5,6 @@ package com.midas2018mobile5.serverapp.domain.order;
  * Blog : https://blog.neonkid.xyz
  * Github : https://github.com/NEONKID
  */
-public enum McorderStatus {
+public enum OrderStatus {
     FINISHED, CANCELED, READY, PURCHASED, NOT_PURCHASED
 }

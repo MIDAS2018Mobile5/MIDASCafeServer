@@ -42,7 +42,8 @@ public class UserController {
     public Page<UserDto.Res> getUsers(@RequestParam(name = "type") final UserSearchType type,
                                       @RequestParam(name = "value", required = false) final String value,
                                       final CustomPageRequest pageRequest) {
-        return userSearchService.search(type, value, pageRequest.of("createdAt")).map(UserDto.Res::new);
+        return userSearchService.search(type, value, pageRequest.of("createdAt"))
+                .map(UserDto.Res::new);
     }
 
     @Secured(Role.ROLES.ADMIN)
