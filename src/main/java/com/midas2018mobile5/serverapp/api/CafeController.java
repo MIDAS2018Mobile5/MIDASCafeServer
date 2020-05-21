@@ -8,6 +8,7 @@ import com.midas2018mobile5.serverapp.model.CustomPageRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -33,7 +34,7 @@ public class CafeController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping
-    public Page<CafeDto.Res> getCafeMenus(final CustomPageRequest pageRequest) {
+    public Page<CafeDto.Res> getCafeMenus(@PageableDefault final CustomPageRequest pageRequest) {
         return cafeSearchService.search("", pageRequest.of("name")).map(CafeDto.Res::new);
     }
 
