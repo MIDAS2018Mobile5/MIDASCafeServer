@@ -1,9 +1,6 @@
 package com.midas2018mobile5.serverapp.config.security.api.filter;
 
 import com.midas2018mobile5.serverapp.config.security.common.handler.SecurityUserLoginHandler;
-import com.midas2018mobile5.serverapp.dao.user.UserService;
-import com.midas2018mobile5.serverapp.domain.user.userEntity.User;
-import com.midas2018mobile5.serverapp.dto.user.UserDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -14,7 +11,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;

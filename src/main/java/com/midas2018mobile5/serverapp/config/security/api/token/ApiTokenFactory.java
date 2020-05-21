@@ -99,7 +99,17 @@ public class ApiTokenFactory {
         return header.substring(ApiTokenData.AUTHORIZATION_HEADER_PREFIX.length());
     }
 
-    // Token 유효성 체크
+    public Date getExpirationDateFromToken(String token) {
+        Date expiration;
+        try {
+            final Claims claims = this.getClaimsFromToken(token);
+            expiration = claims.getExpiration();
+        } catch (Exception e) {
+            expiration = null;
+        }
+        return expiration;
+    }
+
     private Jws<Claims> parseClaims(String token) {
         try {
             return Jwts.parser()
@@ -112,5 +122,18 @@ public class ApiTokenFactory {
             log.error("Request token is invalid. token={}, error={}", token, e.getMessage());
             throw new BadCredentialsException("Request token is invalid.");
         }
+    }
+
+    private Claims getClaimsFromToken(String token) {
+        Claims claims;
+        try {
+            claims = Jwts.parser()
+                    .setSigningKey(apiTokenData.getSigningKey())
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (Exception e) {
+            claims = null;
+        }
+        return claims;
     }
 }

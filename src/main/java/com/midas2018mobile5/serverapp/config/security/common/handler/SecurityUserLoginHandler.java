@@ -43,9 +43,14 @@ public class SecurityUserLoginHandler implements AuthenticationSuccessHandler, A
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+        String token = tokenFactory.createToken(authentication);
+        String refreshToken = tokenFactory.createRefreshToken(authentication);
+
         UserDto.SignInRes dto = UserDto.SignInRes.builder()
-                .token(tokenFactory.createToken(authentication))
-                .refreshToken(tokenFactory.createRefreshToken(authentication))
+                .token(token)
+                .tokenExpired(tokenFactory.getExpirationDateFromToken(token))
+                .refreshToken(refreshToken)
+                .refreshTokenExpired(tokenFactory.getExpirationDateFromToken(refreshToken))
                 .authorities(tokenFactory.getGrantedAuthorities(authentication))
                 .build();
 
