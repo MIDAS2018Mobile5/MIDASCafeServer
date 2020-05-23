@@ -9,6 +9,7 @@ import com.midas2018mobile5.serverapp.model.CustomPageRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -41,7 +42,7 @@ public class UserController {
     @GetMapping
     public Page<UserDto.Res> getUsers(@RequestParam(name = "type") final UserSearchType type,
                                       @RequestParam(name = "value", required = false) final String value,
-                                      final CustomPageRequest pageRequest) {
+                                      @PageableDefault final CustomPageRequest pageRequest) {
         return userSearchService.search(type, value, pageRequest.of("createdAt"))
                 .map(UserDto.Res::new);
     }

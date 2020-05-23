@@ -11,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 import javax.validation.Valid;
 import java.util.Collection;
+import java.util.Date;
 
 /**
  * Created by Neon K.I.D on 4/24/20
@@ -104,10 +105,10 @@ public class UserDto {
 
     @Getter
     public static class Res {
-        private String userid;
-        private String firstName;
-        private String lastName;
-        private Email email;
+        private final String userid;
+        private final String firstName;
+        private final String lastName;
+        private final Email email;
 
         public Res(User user) {
             this.userid = user.getUserid();
@@ -119,15 +120,29 @@ public class UserDto {
 
     @Getter
     public static class SignInRes {
-        private String token;
-        private String refreshToken;
-        private Collection<? extends GrantedAuthority> authorities;
+        private final MCtoken token;
+        private final MCtoken refreshToken;
+        private final Collection<? extends GrantedAuthority> authorities;
 
         @Builder
-        public SignInRes(String token, String refreshToken, Collection<? extends GrantedAuthority> authorities) {
-            this.token = token;
-            this.refreshToken = refreshToken;
+        public SignInRes(String token, Date tokenExpired,
+                         String refreshToken, Date refreshTokenExpired,
+                         Collection<? extends GrantedAuthority> authorities) {
+            this.token = MCtoken.builder().value(token).expired(tokenExpired).build();
+            this.refreshToken = MCtoken.builder().value(refreshToken).expired(refreshTokenExpired).build();
             this.authorities = authorities;
+        }
+    }
+
+    @Getter
+    private static class MCtoken {
+        private final String value;
+        private final Date expired;
+
+        @Builder
+        public MCtoken(String value, Date expired) {
+            this.value = value;
+            this.expired = expired;
         }
     }
 }
